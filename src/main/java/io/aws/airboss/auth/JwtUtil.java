@@ -7,30 +7,33 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
+    
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
+    
     private SecretKey key;
-    // Initializes the key after the class is instantiated and the jwtSecret is injected,
-    // preventing the repeated creation of the key and enhancing performance
+    
     @PostConstruct
     public void init() {
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
-    // Generate JWT token
-    public String generateToken(String username) {
+    
+    public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
               .setSubject(username)
+              .claim("roles", roles) // Incluye roles en el payload
               .setIssuedAt(new Date())
               .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
               .signWith(key, SignatureAlgorithm.HS256)
               .compact();
     }
-    // Get username from JWT token
+    
     public String getUsernameFromToken(String token) {
         return Jwts.parserBuilder()
               .setSigningKey(key).build()
@@ -38,22 +41,29 @@ public class JwtUtil {
               .getBody()
               .getSubject();
     }
-    // Validate JWT token
+    
     public boolean validateJwtToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (SecurityException e) {
-            System.out.println("Invalid JWT signature: " + e.getMessage());
-        } catch (MalformedJwtException e) {
+        } catch (JwtException e) {
             System.out.println("Invalid JWT token: " + e.getMessage());
-        } catch (ExpiredJwtException e) {
-            System.out.println("JWT token is expired: " + e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            System.out.println("JWT token is unsupported: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("JWT claims string is empty: " + e.getMessage());
         }
         return false;
+    }
+    
+    
+    public boolean isTokenExpired(String token) {
+        try {
+            Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration();
+            return expiration.before(new Date());
+        } catch (JwtException e) {
+            return true;
+        }
+    }
+    
+    // Nuevo método para obtener la clave de firma
+    public SecretKey getKey() {
+        return this.key;
     }
 }

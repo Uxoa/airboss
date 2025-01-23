@@ -23,7 +23,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch =FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "profile_id", referencedColumnName = "profile_id", nullable = false)
     @JsonManagedReference
     private Profile profile;

@@ -24,6 +24,9 @@ public class UserService {
     @Autowired
     private ProfileRepository profileRepository;
     
+    @Autowired
+    private UserMapper userMapper;
+    
     @Transactional
     public User createUser(User user, Profile profile, List<String> roles) {
         // Asignar roles
@@ -41,7 +44,11 @@ public class UserService {
         return userRepository.save(user);
     }
     
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    @Transactional
+    public List<UserResponseDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+              .map(userMapper::toResponseDTO) // Mapea cada entidad a un DTO
+              .collect(Collectors.toList());
     }
 }

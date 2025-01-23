@@ -1,18 +1,22 @@
 package io.aws.airboss.users;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import io.aws.airboss.roles.Role;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api/users")
 public class UserController {
     
     @Autowired
     private UserService userService;
+   
     
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
@@ -22,9 +26,13 @@ public class UserController {
                     .collect(Collectors.toList())));
     }
     
+    
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<UserResponseDTO> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
+  
+    
     
 }
