@@ -41,24 +41,7 @@ public class UserService {
         return userRepository.save(user);
     }
     
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-              .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + id));
-    }
-    
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
-    
-    public User updateUser(Long id, User updatedUser) {
-        User existingUser = getUserById(id);
-        existingUser.setUsername(updatedUser.getUsername());
-        existingUser.setPassword(updatedUser.getPassword());
-        return userRepository.save(existingUser);
-    }
-    
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
-    }
-    
 }

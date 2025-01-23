@@ -7,12 +7,12 @@ VALUES
 -- Datos de prueba para usuarios
 INSERT INTO users (username, password, profile_id)
 VALUES
-    ('admin', 'password', 1),
-    ('paloma', 'password123', 2);
+    ('admin', '$2a$12$1EpeTJwnwc.YNTufwsLdbeG7KescccuuLzxG./meDxoJe.LzumLRy', 1),
+    ('paloma', '$2a$12$1EpeTJwnwc.YNTufwsLdbeG7KescccuuLzxG./meDxoJe.LzumLRy', 2);
 
 -- Datos de prueba para roles
 INSERT INTO roles (name)
-VALUES ('ADMIN'), ('USER');
+VALUES ('ROLE_ADMIN'), ('ROLE_USER');
 
 -- Asignar roles a usuarios
 INSERT INTO user_roles (user_id, role_id)

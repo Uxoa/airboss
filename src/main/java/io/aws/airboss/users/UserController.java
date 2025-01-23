@@ -22,4 +22,9 @@ public class UserController {
                     .collect(Collectors.toList())));
     }
     
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+    
 }
