@@ -47,6 +47,9 @@ public class WebSecurityConfig {
                     .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN") // Solo los admins pueden modificar
                     .requestMatchers(HttpMethod.PUT,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
                     .requestMatchers(HttpMethod.DELETE,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/bookings/confirm/{id}").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/bookings/cancel/{id}").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.POST,"/api/bookings/me").hasAuthority("ROLE_ADMIN")
                     // Bloquear cualquier otra solicitud
                     .anyRequest().authenticated()
               )
