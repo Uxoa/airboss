@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - AirBoss</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <div class="logo">AirBoss</div>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/bookings/view">My Bookings</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main>
+    <div class="profile-card">
+        <img src="{{avatar}}" alt="Profile Picture">
+        <h3>{{username}}</h3>
+        <p>Email: {{email}}</p>
+        <p>Member since: {{memberSince}}</p>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,23 @@
+
+<div class="content">
+    <h1>My Bookings</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Flight</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <#list bookings as booking>
+            <tr>
+                <td>${booking.flight}</td>
+                <td>${booking.date}</td>
+                <td>${booking.status}</td>
+            </tr>
+        </#list>
+        </tbody>
+    </table>
+</div>
+

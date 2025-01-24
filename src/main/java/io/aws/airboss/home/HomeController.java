@@ -1,59 +1,48 @@
 package io.aws.airboss.home;
 
-import java.security.Principal;
-import java.util.List;
-
 import io.aws.airboss.bookings.Booking;
 import io.aws.airboss.bookings.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
+import java.util.List;
 
 @Controller
-class HomeController {
+public class HomeController {
+    
+    private final BookingService bookingService;
+    
+    public HomeController(BookingService bookingService) {
+        this.bookingService = bookingService;
+    }
     
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("name", "Paloma");
-        return "index"; // Renderiza index.ftl
+    public String welcome(Model model) {
+        model.addAttribute("title", "Welcome to AirBoss");
+        return "welcome"; // Página pública de bienvenida
     }
     
-  /*  @GetMapping("/register")
-    public String register() {
-        return "register";
+    @GetMapping("/dashboard")
+    public String dashboard(Model model, Principal principal) {
+        model.addAttribute("title", "Dashboard");
+        model.addAttribute("username", principal.getName());
+        return "index"; // Página privada principal
     }
-    
-    @Autowired
-    private BookingService bookingService;
-    
     
     @GetMapping("/profile")
     public String profile() {
-        return "profile"; // Thymeleaf buscará en /templates/profile.html
+        return "profile"; // Página de perfil del usuario autenticado
     }
     
     @GetMapping("/bookings/view")
     public String bookings(Model model, Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
+        Long userId = Long.parseLong(authentication.getName()); // ID del usuario
         List<Booking> bookings = bookingService.getBookingsByUserId(userId);
         model.addAttribute("bookings", bookings);
-        return "bookings"; // Thymeleaf buscará en /templates/bookings.html
-    }*/
-    
-    
-    
-    @GetMapping("/private")
-    public String connectToPrivatePath(Principal principal) {
-        return "Hello, " + principal.getName() + "!";
-    }
-
-    @GetMapping("/common")
-    public String common() {
-        return "Hello, you have read scope!";
+        return "bookings"; // Página de reservas del usuario
     }
 
 }

@@ -38,30 +38,27 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
               .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    // Permitir acceso sin autenticación a las rutas públicas
                     .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                    // Asegurar rutas para vistas Freemarker
                     .requestMatchers("/profile", "/bookings/view").authenticated()
-                    // Configurar permisos para API
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                     .requestMatchers("/api/bookings/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
-                    .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+                    .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
-                    .loginPage("/login") // Página personalizada de inicio de sesión
-                    .loginProcessingUrl("/process-login") // Endpoint para procesar el login
-                    .defaultSuccessUrl("/", true) // Redirección a la página principal tras iniciar sesión
-                    .failureUrl("/login?error=true") // Redirección en caso de error
-                    .permitAll() // Permitir acceso sin autenticación
+                    .loginPage("/login") // Página de inicio de sesión personalizada
+                    .loginProcessingUrl("/process-login") // URL para procesar el formulario de login
+                    .defaultSuccessUrl("/dashboard", true) // Redirige a /dashboard tras iniciar sesión
+                    .failureUrl("/login?error=true") // En caso de error en el login
+                    .permitAll()
               )
               .logout(logout -> logout
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                    .logoutSuccessUrl("/login?logout")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // URL de logout
+                    .logoutSuccessUrl("/login?logout") // Redirige tras cerrar sesión
                     .permitAll()
               )
               .cors(cors -> cors.disable())
-              .csrf(csrf -> csrf.disable()); // Si necesitas habilitar CSRF, ajusta esta línea
+              .csrf(csrf -> csrf.disable());
         
         return http.build();
     }

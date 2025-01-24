@@ -1,177 +1,194 @@
-/* Global styles */
+/* General settings */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f3f4f6;
-    color: #333;
     margin: 0;
-    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(145deg, #1b1b2f, #23253a);
+    color: #ffffff;
     line-height: 1.6;
 }
 
-/* Header styles */
+/* Header */
 header {
-    background-color: #1e293b;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #1cb5e0);
     color: #ffffff;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-header h1 {
-    font-size: 1.8rem;
-    margin: 0;
+header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 1.5rem;
-}
-
-nav a {
-    text-decoration: none;
+header nav a {
     color: #ffffff;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-nav a:hover {
-    background-color: #334155;
-}
-
-/* Main content */
-main {
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #ffffff;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-/* Table styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1.5rem 0;
-    font-size: 1rem;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-}
-
-th {
-    background-color: #f1f5f9;
-    color: #1e293b;
-    font-weight: bold;
-}
-
-tr:nth-child(even) {
-    background-color: #f9fafb;
-}
-
-tr:hover {
-    background-color: #e2e8f0;
-    cursor: pointer;
-}
-
-/* Form styles */
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    margin: 1.5rem 0;
-}
-
-form label {
-    font-weight: bold;
-    color: #1e293b;
-}
-
-form input, form button, form select {
-    padding: 0.9rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 1rem;
-    width: 100%;
-}
-
-form button {
-    background-color: #2563eb;
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-form button:hover {
-    background-color: #1d4ed8;
-}
-
-/* Button styles */
-button, a.button {
-    padding: 0.8rem 1.5rem;
-    background-color: #3b82f6;
-    color: white;
-    font-weight: 500;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    margin: 0 1rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
 }
 
-button:hover, a.button:hover {
-    background-color: #2563eb;
+header nav a:hover {
+    color: #00e6e6;
 }
 
-/* Footer styles */
+/* Footer */
 footer {
+    background: #1f1c2c;
+    color: #b8c1ec;
     text-align: center;
-    padding: 1.2rem;
-    background-color: #1e293b;
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #00e6e6;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
     color: #ffffff;
+}
+
+/* Buttons */
+button, .btn {
+    background: #1cb5e0;
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+
+button:hover, .btn:hover {
+    background: #00b4b4;
+    transform: scale(1.05);
+}
+
+/* Welcome banner */
+.welcome-banner {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #1f1c2c, #1cb5e0);
+    color: #ffffff;
+    border-radius: 10px;
     margin-top: 2rem;
-    position: relative;
-    bottom: 0;
+}
+
+.welcome-banner h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.welcome-banner p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* Profile Section */
+.profile-card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #ffffff;
+}
+
+.profile-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.index-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.index-actions .btn {
+    padding: 1rem 2rem;
+}
+
+/* Login Page */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background: linear-gradient(145deg, #1b1b2f, #23253a);
+    padding: 2rem;
+}
+
+.login-card {
+    background: linear-gradient(135deg, #1f1c2c, #1cb5e0);
+    color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
     width: 100%;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
 }
 
-footer p {
-    margin: 0;
-    font-size: 0.95rem;
+.login-card h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #00e6e6;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    nav ul {
-        flex-direction: column;
-        gap: 0.8rem;
-    }
-
-    main {
-        padding: 1rem;
-    }
-
-    table {
-        font-size: 0.9rem;
-    }
+.login-card p {
+    margin-bottom: 1.5rem;
+    color: #b8c1ec;
 }
+
+.form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 5px #00e6e6;
+}
+
+.register-link {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.register-link a {
+    color: #00e6e6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
+
