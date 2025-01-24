@@ -1,6 +1,7 @@
 package io.aws.airboss.users;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.aws.airboss.profiles.ProfileRequestDTO;
 import jakarta.persistence.*;
 import io.aws.airboss.profiles.Profile;
 import io.aws.airboss.roles.Role;

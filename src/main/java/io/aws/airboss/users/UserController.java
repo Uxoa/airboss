@@ -34,5 +34,32 @@ public class UserController {
     }
   
     
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+        UserResponseDTO user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+    
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserResponseDTO user = userService.getUserByUsername(username);
+        return ResponseEntity.ok(user);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserRequestDTO userRequestDTO) {
+        UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
+        return ResponseEntity.ok(updatedUser);
+    }
+    
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+    
     
 }

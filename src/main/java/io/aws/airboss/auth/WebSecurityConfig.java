@@ -3,6 +3,7 @@ package io.aws.airboss.auth;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -39,16 +40,25 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    .requestMatchers("/api/auth/**").permitAll() // Permitir acceso a auth sin autenticación
-                    .requestMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                    // Permitir el acceso sin autenticación a auth endpoints
+                    .requestMatchers("/api/auth/**").permitAll()
+                    // Configurar permisos para /api/users
+                    .requestMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // Para el acceso general
+                    .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN") // Solo los admins pueden modificar
+                    .requestMatchers(HttpMethod.PUT,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.DELETE,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
+                    // Bloquear cualquier otra solicitud
                     .anyRequest().authenticated()
               )
+              // Configuración de manejo de sesión
               .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+              // Deshabilitar CSRF y CORS (si no son necesarios)
               .csrf(csrf -> csrf.disable())
               .cors(cors -> cors.disable())
+              // Agregar el filtro JWT
               .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         
-        
+        // Manejo de excepciones para errores de autenticación y acceso denegado
         http.exceptionHandling(exceptionHandling -> exceptionHandling
               .authenticationEntryPoint(unauthorizedHandler)
               .accessDeniedHandler((request, response, accessDeniedException) -> {
