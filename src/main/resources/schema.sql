@@ -58,7 +58,13 @@ CREATE TABLE IF NOT EXISTS flights (
                                        departure DATETIME NOT NULL,
                                        arrival DATETIME NOT NULL,
                                        origin VARCHAR(255) NOT NULL,
-                                       destination VARCHAR(255) NOT NULL
+                                       destination VARCHAR(255) NOT NULL,
+                                       departure_time DATETIME NOT NULL,
+                                       total_seats INT NOT NULL,
+                                       available_seats INT NOT NULL,
+                                       is_available BOOLEAN NOT NULL,
+                                       airline_name VARCHAR(255) NOT NULL
+
 );
 
 -- Crear tabla de reservas

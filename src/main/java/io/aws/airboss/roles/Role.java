@@ -1,6 +1,8 @@
 package io.aws.airboss.roles;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.aws.airboss.users.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Role {
     @Column(nullable = false, unique = true)
     private String name;
     
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private List<User> users = new ArrayList<>();
     

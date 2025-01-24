@@ -24,13 +24,8 @@ public class BookingController {
     }
     
     @PostMapping
-    public ResponseEntity<Booking> createBooking(
-          @RequestParam Long flightId,
-          @RequestParam int numberOfSeats,
-          Authentication authentication) {
-        
-        Long userId = Long.valueOf(authentication.getName());
-        Booking booking = bookingService.createBooking(userId, flightId, numberOfSeats);
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequestDTO request) {
+        Booking booking = bookingService.createBooking(request.getUserId(), request.getFlightId(), request.getNumberOfSeats());
         return ResponseEntity.ok(booking);
     }
     

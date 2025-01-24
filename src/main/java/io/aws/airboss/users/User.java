@@ -1,5 +1,6 @@
 package io.aws.airboss.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.aws.airboss.profiles.ProfileRequestDTO;
 import jakarta.persistence.*;
@@ -29,6 +30,7 @@ public class User {
     @JsonManagedReference
     private Profile profile;
     
+ 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
           name = "user_roles",

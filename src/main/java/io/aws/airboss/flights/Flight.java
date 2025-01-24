@@ -19,19 +19,19 @@ public class Flight {
     @Column(nullable = false)
     private String destination;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "departure_time")
     private LocalDateTime departureTime;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "total_seats")
     private int totalSeats;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "available_seats")
     private int availableSeats;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "is_available")
     private boolean isAvailable;
     
-    @Column(nullable = false)
+    @Column(nullable = false, name = "airline_name")
     private String airlineName;
     
     public Flight() {}
