@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 class HomeController {
     
     @GetMapping("/")
-    String index(Principal principal) {
-        return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
+    public String index(Model model) {
+        model.addAttribute("name", "Paloma");
+        return "index"; // Renderiza index.ftl
     }
     
   /*  @GetMapping("/register")
