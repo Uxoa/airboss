@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Página de Inicio</title>
+</head>
+<body>
+<!-- Inserta contenido dentro del layout -->
+<div th:replace="layout :: layout (content='indexContent')"></div>
+
+<!-- Define el contenido que será insertado -->
+<div th:fragment="indexContent">
+    <h2>Bienvenido a la página de inicio</h2>
+    <p>Este es el contenido principal de la página de inicio.</p>
+</div>
+</body>
+</html>
+<!--     <h2>Bienvenido a la Página Principal</h2>
+        <p>Selecciona una opción del menú para continuar:</p>
+        <ul>
+            <li><a th:href="@{/flights/search}">Buscar vuelos</a></li>
+            <li><a th:href="@{/profile}">Ver Perfil</a></li>
+            <li><a th:href="@{/bookings}">Mis Reservas</a></li>
+        </ul>-->
+
+

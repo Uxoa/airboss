@@ -1,20 +1,50 @@
-package org.factoriaf5.jwt_symmetric.home;
+package io.aws.airboss.home;
 
 import java.security.Principal;
+import java.util.List;
 
+import io.aws.airboss.bookings.Booking;
+import io.aws.airboss.bookings.BookingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping(path = "${api-endpoint}")
-public class HomeController {
-
-    @GetMapping("")
-    public String index() {
-        return "Hello, Spring Security!";
+@Controller
+class HomeController {
+    
+    @GetMapping("/")
+    String index(Principal principal) {
+        return principal != null ? "home/homeSignedIn" : "home/homeNotSignedIn";
     }
-
+    
+  /*  @GetMapping("/register")
+    public String register() {
+        return "register";
+    }
+    
+    @Autowired
+    private BookingService bookingService;
+    
+    
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile"; // Thymeleaf buscará en /templates/profile.html
+    }
+    
+    @GetMapping("/bookings/view")
+    public String bookings(Model model, Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        List<Booking> bookings = bookingService.getBookingsByUserId(userId);
+        model.addAttribute("bookings", bookings);
+        return "bookings"; // Thymeleaf buscará en /templates/bookings.html
+    }*/
+    
+    
+    
     @GetMapping("/private")
     public String connectToPrivatePath(Principal principal) {
         return "Hello, " + principal.getName() + "!";

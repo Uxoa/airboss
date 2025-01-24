@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: content">
+<body>
+<h2>Detalles de la Reserva</h2>
+<div>
+    <p><strong>ID:</strong> <span th:text="${booking.bookingId}"></span></p>
+    <p><strong>Usuario:</strong> <span th:text="${booking.user.username}"></span></p>
+    <p><strong>Vuelo:</strong> <span th:text="${booking.flight.flightNumber}"></span></p>
+    <p><strong>Asientos:</strong> <span th:text="${booking.numberOfSeats}"></span></p>
+    <p><strong>Estado:</strong> <span th:text="${booking.status}"></span></p>
+</div>
+<a th:href="@{/bookings}">Volver a la Lista</a>
+</body>
+</html>

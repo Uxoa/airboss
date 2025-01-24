@@ -1,6 +1,7 @@
 package io.aws.airboss.auth;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 public class WebSecurityConfig {
@@ -38,38 +40,42 @@ public class WebSecurityConfig {
     }
     
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    // Permitir el acceso sin autenticación a auth endpoints
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, ConfigurableWebServerFactory configurableWebServerFactory, CorsConfigurationSource corsConfigurationSource) throws Exception {
+        http
+              
+              .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                    // Permitir acceso sin autenticación a las rutas públicas
+                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                    // Asegurar rutas para vistas Thymeleaf
+                    .requestMatchers("/profile", "/bookings/view").authenticated()
+                    // Configurar permisos para la API
                     .requestMatchers("/api/auth/**").permitAll()
-                    // Configurar permisos para /api/users
-                    .requestMatchers("/api/users").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // Para el acceso general
-                    .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN") // Solo los admins pueden modificar
-                    .requestMatchers(HttpMethod.PUT,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.DELETE,"/api/users/{id}").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.POST,"/api/bookings/confirm/{id}").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.POST,"/api/bookings/cancel/{id}").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.POST,"/api/bookings/me").hasAuthority("ROLE_ADMIN")
-                    // Bloquear cualquier otra solicitud
+                    .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
+                    .requestMatchers("/api/bookings/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                     .anyRequest().authenticated()
               )
-              // Configuración de manejo de sesión
-              .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-              // Deshabilitar CSRF y CORS (si no son necesarios)
-              .csrf(csrf -> csrf.disable())
+              .formLogin(formLogin -> formLogin
+                    .loginPage("/login") // Página personalizada de inicio de sesión
+                    .loginProcessingUrl("/process-login") // Endpoint para procesar el login
+                    .defaultSuccessUrl("/", true) // Redirección a la página principal tras iniciar sesión
+                    .failureUrl("/login?error=true") // Redirección en caso de error
+                    .permitAll() // Permitir acceso sin autenticación
+              )
+              
+              
               .cors(cors -> cors.disable())
-              // Agregar el filtro JWT
-              .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+              .csrf(csrf -> csrf.disable())
+              
+              
+              .logout(logout -> logout
+                    .logoutUrl("/logout")
+                    .logoutSuccessUrl("/login?logout")
+                    .permitAll()
+              );
         
-        // Manejo de excepciones para errores de autenticación y acceso denegado
-        http.exceptionHandling(exceptionHandling -> exceptionHandling
-              .authenticationEntryPoint(unauthorizedHandler)
-              .accessDeniedHandler((request, response, accessDeniedException) -> {
-                  response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                  response.getWriter().write("Access Denied: " + accessDeniedException.getMessage());
-              })
-        );
         
         return http.build();
     }
+
+    
 }

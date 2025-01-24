@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -84,6 +85,16 @@ public class BookingService {
         
         // Eliminar bloqueo de plazas
         seatHoldMap.remove(booking.getFlight().getFlightId());
+    }
+    
+    
+    @Transactional
+    public List<Booking> getBookingsByUserId(Long userId) {
+        return bookingRepository.findByUser_UserId(userId);
+    }
+    
+    public List<Booking> getAllBookings() {
+        return bookingRepository.findAll();
     }
     
     // Limpieza de bloqueos caducados
