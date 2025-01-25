@@ -1,5 +1,8 @@
-package io.aws.airboss.bookings;
+package io.aws.airboss.web;
 
+import io.aws.airboss.bookings.Booking;
+import io.aws.airboss.bookings.BookingRepository;
+import io.aws.airboss.bookings.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

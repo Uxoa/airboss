@@ -38,23 +38,34 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
               .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                    .requestMatchers("/profile", "/bookings/view").authenticated()
+                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
+                    .requestMatchers(
+                          "/perfil",
+                          "/mybookings",
+                          "/details/**",
+                          "/dashboard",
+                          "/vuelos",
+                          "/vuelos/**",
+                          "/buscar",
+                          "/reservar/create",
+                          "/reservas/confirm",
+                          "/reservas/cancel/**"
+                    ).authenticated()
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers("/api/bookings/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                    .requestMatchers("/api/bookings/**", "/api/flights/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
                     .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin
-                    .loginPage("/login") // Página de inicio de sesión personalizada
-                    .loginProcessingUrl("/process-login") // URL para procesar el formulario de login
-                    .defaultSuccessUrl("/dashboard", true) // Redirige a /dashboard tras iniciar sesión
-                    .failureUrl("/login?error=true") // En caso de error en el login
+                    .loginPage("/login")
+                    .loginProcessingUrl("/process-login")
+                    .defaultSuccessUrl("/dashboard", true)
+                    .failureUrl("/login?error=true")
                     .permitAll()
               )
               .logout(logout -> logout
-                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // URL de logout
-                    .logoutSuccessUrl("/login?logout") // Redirige tras cerrar sesión
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login?logout")
                     .permitAll()
               )
               .cors(cors -> cors.disable())
@@ -62,8 +73,5 @@ public class WebSecurityConfig {
         
         return http.build();
     }
-    
-    
-    
     
 }
