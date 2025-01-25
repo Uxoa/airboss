@@ -4,10 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<h1>Oops! An error occurred.</h1>
-<p>{{message}}</p>
-<a href="/">Go back to Home</a>
+<header>
+    <div class="header-container">
+        <a href="/" class="logo-link">
+            <div class="logo-img">
+                <img src="/images/logo01.png" alt="AirBoss Logo">
+            </div>
+            <span class="logo-text">AirBoss</span>
+        </a>
+    </div>
+</header>
+
+<main class="error-container">
+    <h1>Oops! An error occurred.</h1>
+    <p>{{message}}</p>
+    <a href="/" class="btn btn-primary">Go back to Home</a>
+</main>
+
+<footer>
+    <p>© 2025 AirBoss. All rights reserved.</p>
+</footer>
 </body>
 </html>

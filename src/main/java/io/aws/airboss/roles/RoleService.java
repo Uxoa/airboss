@@ -23,4 +23,8 @@ public class RoleService {
         return roleRepository.findByName(name)
               .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + name));
     }
+    
+    public String getRoleName(String role) {
+        return getRoleByName(role).getName();
+    }
 }

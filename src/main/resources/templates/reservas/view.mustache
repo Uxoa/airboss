@@ -21,20 +21,25 @@
         <a href="/logout">Logout</a>
     </nav>
 </header>
-
-<main>
-    <div class="welcome-banner">
-        <h1>Welcome, {{username}}</h1>
-        <p>Explore the best flight deals and manage your bookings seamlessly.</p>
-        <div class="index-actions">
-            <a href="/reservas/view" class="btn">View My Bookings</a>
-            <a href="/buscar" class="btn">Search Flights</a>
-        </div>
-    </div>
+<main class="reservas-container">
+    <h1>Mis Reservas</h1>
+    <section class="reservas-list">
+        {{#bookings}}
+            <article class="reserva-item">
+                <p><strong>Reserva ID:</strong> {{bookingId}}</p>
+                <p><strong>Vuelo:</strong> {{flight}}</p>
+                <p><strong>Fecha:</strong> {{bookingDate}}</p>
+                <p><strong>Estado:</strong> {{status}}</p>
+            </article>
+        {{/bookings}}
+        {{^bookings}}
+            <p class="no-reservas">No tienes reservas actualmente.</p>
+        {{/bookings}}
+    </section>
 </main>
 
 <footer>
-    <p>&copy; 2025 AirBoss. All rights reserved. <a href="/terms">Terms of Service</a></p>
+    <p>© 2025 AirBoss. Todos los derechos reservados.</p>
 </footer>
 </body>
 </html>

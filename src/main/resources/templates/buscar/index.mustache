@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Flights - AirBoss</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
+        </div>
+        <span class="logo-text">AirBoss</span>
+    </a>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/perfil">My Profile</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main class="search-container">
+    <h1>Search Flights</h1>
+    <form action="/buscar/resultados" method="get" class="search-form">
+        <div class="form-group">
+            <label for="from">From:</label>
+            <select id="from" name="from" required>
+                {{#airports}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/airports}}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="to">To:</label>
+            <select id="to" name="to" required>
+                {{#airports}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/airports}}
+            </select>
+        </div>
+
+        <form action="/buscar/resultados" method="get">
+            <label for="from">From:</label>
+            <select id="from" name="from" required>
+                {{#airports}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/airports}}
+            </select>
+
+            <label for="to">To:</label>
+            <select id="to" name="to" required>
+                {{#airports}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/airports}}
+            </select>
+
+            <label for="date">Departure Time:</label>
+            <input type="datetime-local" id="date" name="date" required>
+
+
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+</main>
+
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved.</p>
+</footer>
+</body>
+</html>

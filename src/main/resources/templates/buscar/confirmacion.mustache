@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Booking - AirBoss</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
+        </div>
+        <span class="logo-text">AirBoss</span>
+    </a>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/perfil">My Profile</a>
+        <a href="/reservas/view">My Reservations</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+<main class="confirm-container">
+    <h1>Confirm Booking</h1>
+    <div class="flight-details">
+        <p><strong>Flight ID:</strong> {{flight.id}}</p>
+        <p><strong>Origin:</strong> {{flight.origin}}</p>
+        <p><strong>Destination:</strong> {{flight.destination}}</p>
+        <p><strong>Date:</strong> {{flight.date}}</p>
+        <p><strong>Price:</strong> ${{flight.price}}</p>
+        <p><strong>User:</strong> {{username}}</p>
+    </div>
+
+    <form action="/reservas/crear" method="post" class="confirm-form">
+        <input type="hidden" name="flightId" value="{{flight.id}}">
+        <button type="submit" class="btn btn-primary">Confirm Booking</button>
+    </form>
+</main>
+
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved.</p>
+</footer>
+</body>
+</html>
