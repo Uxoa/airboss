@@ -10,8 +10,15 @@ public class GlobalWebError {
     
     @GetMapping("/error")
     public String handleError(HttpServletRequest request, Model model) {
-        // Lógica para manejar errores
-        model.addAttribute("message", "Something went wrong. Please try again.");
-        return "error"; // Renderiza la plantilla error.html
+        Object status = request.getAttribute("javax.servlet.error.status_code");
+        if (status != null) {
+            int statusCode = Integer.parseInt(status.toString());
+            model.addAttribute("message", "Error Code: " + statusCode);
+        } else {
+            model.addAttribute("message", "An unexpected error occurred.");
+        }
+        return "error";
     }
+    
+    
 }

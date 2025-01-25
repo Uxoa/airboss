@@ -21,6 +21,11 @@ public class GlobalWebController {
         return "welcome";
     }
     
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login"; // Devuelve la vista "login.mustache"
+    }
+    
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         model.addAttribute("title", "Dashboard");
