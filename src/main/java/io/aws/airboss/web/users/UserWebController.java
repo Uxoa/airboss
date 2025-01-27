@@ -1,12 +1,7 @@
-package io.aws.airboss.web;
+package io.aws.airboss.web.users;
 
-import io.aws.airboss.users.User;
+import io.aws.airboss.web.GlobalWebServices;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.security.Principal;
-import java.util.List;
 
 @Controller
 public class UserWebController {
@@ -17,5 +12,5 @@ public class UserWebController {
         this.globalWebServices = globalWebServices;
     }
     
-  
+   
 }

@@ -1,15 +1,18 @@
-package io.aws.airboss.web;
+package io.aws.airboss.web.bookings;
 
 import io.aws.airboss.bookings.Booking;
+import io.aws.airboss.flights.Flight;
+import io.aws.airboss.web.GlobalWebServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class BookingWebController {
@@ -31,7 +34,6 @@ public class BookingWebController {
     }
     
     
-    
     /** Reservas del usuario */
     @GetMapping("/mybookings")
     public String userBookings(Model model, Principal principal) {
@@ -41,13 +43,27 @@ public class BookingWebController {
     }
     
     
-    
-    
     /** Cancelar una reserva */
-    @PostMapping("/reservas/cancel/{id}")
+    @PostMapping("/reservas/cancelar/{id}")
     public String cancelBooking(@PathVariable Long id, Principal principal) {
-        globalWebServices.cancelBooking(principal.getName(), id);
-        return "redirect:/mybookings";
+        String username = principal.getName();
+        globalWebServices.cancelBooking(username, id);
+        return "redirect:/usuario"; // Redirigir a la página de perfil después de cancelar
+    }
+    
+    @GetMapping("/flights/search")
+    public String searchFlights(@RequestParam String origin,
+                                @RequestParam String destination,
+                                @RequestParam String fromTime,
+                                @RequestParam String toTime,
+                                Model model) {
+        LocalDateTime from = LocalDateTime.parse(fromTime);
+        LocalDateTime to = LocalDateTime.parse(toTime);
+        
+        List<Flight> flights = globalWebServices.findFlightsByCriteria(origin, destination, from, to);
+        model.addAttribute("flights", flights);
+        
+        return "flight-search-results";
     }
 }
 

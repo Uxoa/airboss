@@ -25,18 +25,23 @@
     <div class="profile-container">
         <h1>{{title}}</h1>
         <div class="profile-card">
-            <img src="{{avatar}}" alt="Profile Picture" class="profile-avatar">
+            <img src="{{profileImage}}" alt="Profile Picture" class="profile-avatar">
             <p><strong>Username:</strong> {{username}}</p>
             <p><strong>Email:</strong> {{email}}</p>
             <p><strong>Role:</strong> {{role}}</p>
             <p><strong>Created:</strong> {{created}}</p>
-
+            <p><strong>Last Login:</strong> {{lastLogin}}</p>
+        </div>
         </div>
         <div class="bookings">
             <h2>Your Bookings</h2>
+            <h2>Your Bookings</h2>
             <ul>
                 {{#bookings}}
-                    <li>{{.}}</li>
+                    <li>{{flightDetails}}</li>
+                {{/bookings}}
+                {{^bookings}}
+                    <p>No bookings found.</p>
                 {{/bookings}}
             </ul>
         </div>
@@ -48,3 +53,4 @@
 </footer>
 </body>
 </html>
+

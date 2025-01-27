@@ -1,21 +1,56 @@
-<h1>Search Results</h1>
-<p>From: {{from}}</p>
-<p>To: {{to}}</p>
-<p>Date: {{departureTime}}</p>
-
-<div class="results-container">
-    {{#flights}}
-        <div class="result-item">
-            <p><strong>Flight ID:</strong> {{id}}</p>
-            <p><strong>Origin:</strong> {{origin}}</p>
-            <p><strong>Destination:</strong> {{destination}}</p>
-            <p><strong>Date:</strong> {{departureTime}}</p>
-            <p><strong>Price:</strong> ${{price}}</p>
-            <a href="/confirmar/{{id}}" class="btn btn-secondary">Seleccionar</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
         </div>
-    {{/flights}}
+        <span class="logo-text">AirBoss</span>
+    </a>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/reservas">My Bookings</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
 
-    {{^flights}}
-        <p>No flights found for the selected criteria.</p>
-    {{/flights}}
-</div>
+<main>
+    <div class="search-results-container">
+        <h1>{{title}}</h1>
+        <p><strong>From:</strong> {{from}}</p>
+        <p><strong>To:</strong> {{to}}</p>
+        <p><strong>Departure Time:</strong> {{departureTime}}</p>
+
+        <div class="results-list">
+            {{#flights}}
+                <div class="result-card">
+                    <h2>Flight ID: {{id}}</h2>
+                    <p><strong>Origin:</strong> {{origin}}</p>
+                    <p><strong>Destination:</strong> {{destination}}</p>
+                    <p><strong>Date:</strong> {{departureTime}}</p>
+                    <p><strong>Duration:</strong> {{duration}} hours</p>
+                    <p><strong>Price:</strong> ${{price}}</p>
+                    <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+                    <a href="/confirmar/{{id}}" class="btn btn-primary">Select Flight</a>
+                </div>
+            {{/flights}}
+
+            {{^flights}}
+                <p>No flights found for the selected criteria.</p>
+            {{/flights}}
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved.</p>
+</footer>
+</body>
+</html>

@@ -41,19 +41,33 @@ public class WebSecurityConfig {
                     .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/error").permitAll()
                     .requestMatchers(
                           "/perfil",
+                          "/perfil/**",
+                          "/reservas",
+                          "/reservas/**",
                           "/mybookings",
+                          "/mybookings/**",
+                          "/usuario",
+                          "/usuario/**",
                           "/details/**",
                           "/dashboard",
                           "/vuelos",
                           "/vuelos/**",
                           "/buscar",
+                          "/buscar/**",
                           "/reservar/create",
                           "/reservas/confirm",
-                          "/reservas/cancel/**"
+                          "/reservas/cancel/**",
+                          "/calendario/**",
+                          "/airports/**",
+                          "/api/flights/available-dates",
+                          "/api/flights/search",
+                          "/api/flights/**",
+                          "/api/aeropuertos/**"
                     ).authenticated()
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")
                     .requestMatchers("/api/bookings/**", "/api/flights/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER")
+                    .requestMatchers("/api/reservations/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_USER") // Si tienes un módulo de reservas
                     .anyRequest().authenticated()
               )
               .formLogin(formLogin -> formLogin

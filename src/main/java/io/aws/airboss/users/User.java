@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import io.aws.airboss.profiles.Profile;
 import io.aws.airboss.roles.Role;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -97,4 +98,5 @@ public class User {
         this.roles = roles;
     }
     
+  
 }

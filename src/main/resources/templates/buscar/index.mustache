@@ -3,70 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Flights - AirBoss</title>
+    <title>Search Flights - Calendar</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <!-- Flatpickr CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 </head>
 <body>
 <header>
-    <a href="/" class="logo-link">
-        <div class="logo-img">
-            <img src="/images/logo01.png" alt="AirBoss Logo">
-        </div>
-        <span class="logo-text">AirBoss</span>
-    </a>
+    <div class="logo">
+        <img src="/images/logo01.png" alt="AirBoss Logo" style="height: 40px;">
+        <span style="font-size: 24px; font-weight: bold;">AirBoss</span>
+    </div>
     <nav>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/perfil">My Profile</a>
-        <a href="/logout">Logout</a>
+        <a href="/dashboard" style="color: white; text-decoration: none; margin-right: 15px;">Dashboard</a>
+        <a href="/perfil" style="color: white; text-decoration: none; margin-right: 15px;">My Profile</a>
+        <a href="/logout" style="color: white; text-decoration: none;">Logout</a>
     </nav>
 </header>
 
 <main class="search-container">
     <h1>Search Flights</h1>
     <form action="/buscar/resultados" method="get" class="search-form">
+        <!-- Origin -->
         <div class="form-group">
             <label for="from">From:</label>
             <select id="from" name="from" required>
-                {{#airports}}
-                    <option value="{{.}}">{{.}}</option>
-                {{/airports}}
+                <option value="" disabled selected>Select your origin</option>
             </select>
         </div>
 
+        <!-- Destination -->
         <div class="form-group">
             <label for="to">To:</label>
             <select id="to" name="to" required>
-                {{#airports}}
-                    <option value="{{.}}">{{.}}</option>
-                {{/airports}}
+                <option value="" disabled selected>Select your destination</option>
             </select>
         </div>
 
-        <form action="/buscar/resultados" method="get">
-            <label for="from">From:</label>
-            <select id="from" name="from" required>
-                {{#airports}}
-                    <option value="{{.}}">{{.}}</option>
-                {{/airports}}
-            </select>
-
-            <label for="to">To:</label>
-            <select id="to" name="to" required>
-                {{#airports}}
-                    <option value="{{.}}">{{.}}</option>
-                {{/airports}}
-            </select>
-
+        <!-- Departure Time -->
+        <div class="form-group">
             <label for="date">Departure Time:</label>
-            <input type="datetime-local" id="date" name="date" required>
+            <input id="calendar" type="text" name="date" placeholder="Pick a date" required>
+        </div>
 
-
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 </main>
 
 <footer>
     <p>&copy; 2025 AirBoss. All rights reserved.</p>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Cargar aeropuertos desde el backend
+        fetch('/api/airports/allAirports') // Asegúrate de que el endpoint es correcto
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error fetching airports');
+                    }
+                    return response.json();
+                })
+                .then(airports => {
+                    const fromDropdown = document.getElementById('from');
+                    const toDropdown = document.getElementById('to');
+                    fromDropdown.innerHTML = '<option value="" disabled selected>Select your origin</option>';
+                    toDropdown.innerHTML = '<option value="" disabled selected>Select your destination</option>';
+                    airports.forEach(airport => {
+                        const option = `<option value="${airport.iataCode}">${airport.name}</option>`;
+                        fromDropdown.insertAdjacentHTML('beforeend', option);
+                        toDropdown.insertAdjacentHTML('beforeend', option);
+                    });
+                })
+                .catch(error => console.error('Error loading airports:', error));
+
+        // Cargar fechas disponibles
+        fetch('/api/flights/available-dates') // Asegúrate de que el endpoint es correcto
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error fetching available dates');
+                    }
+                    return response.json();
+                })
+                .then(flights => {
+                    const highlightedDates = flights.map(flight => flight.date);
+
+                    flatpickr("#calendar", {
+                        enable: highlightedDates,
+                        dateFormat: "Y-m-d",
+                        onChange: (selectedDates, dateStr) => {
+                            const flightsOnDay = flights.filter(flight => flight.date === dateStr);
+                            console.log(`Flights on ${dateStr}:`, flightsOnDay);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error loading dates:', error));
+    });
+</script>
 </body>
 </html>
