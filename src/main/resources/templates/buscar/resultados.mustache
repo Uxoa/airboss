@@ -16,41 +16,52 @@
     </a>
     <nav>
         <a href="/dashboard">Dashboard</a>
-        <a href="/reservas">My Bookings</a>
+        <a href="/perfil">My Profile</a>
+        <a href="/reservas/view">My Bookings</a>
         <a href="/logout">Logout</a>
     </nav>
 </header>
 
-<main>
-    <div class="search-results-container">
-        <h1>{{title}}</h1>
-        <p><strong>From:</strong> {{from}}</p>
-        <p><strong>To:</strong> {{to}}</p>
-        <p><strong>Departure Time:</strong> {{departureTime}}</p>
 
-        <div class="results-list">
-            {{#flights}}
-                <div class="result-card">
-                    <h2>Flight ID: {{id}}</h2>
-                    <p><strong>Origin:</strong> {{origin}}</p>
-                    <p><strong>Destination:</strong> {{destination}}</p>
-                    <p><strong>Date:</strong> {{departureTime}}</p>
-                    <p><strong>Duration:</strong> {{duration}} hours</p>
-                    <p><strong>Price:</strong> ${{price}}</p>
-                    <p><strong>Available Seats:</strong> {{availableSeats}}</p>
-                    <a href="/confirmar/{{id}}" class="btn btn-primary">Select Flight</a>
-                </div>
-            {{/flights}}
+<main class="search-container">
+    <h1>{{title}}</h1>
 
-            {{^flights}}
-                <p>No flights found for the selected criteria.</p>
-            {{/flights}}
+    {{#error}}
+        <div class="error-message">
+            <p>{{error}}</p>
         </div>
-    </div>
+    {{/error}}
+
+    {{#flights}}
+        <div class="flight">
+            <h2>Flight Number: {{flightNumber}}</h2>
+            <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
+            <p><strong>Departure:</strong> {{departureTime}}</p>
+            <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+            <form action="/reservas/crear" method="post">
+                <input type="hidden" name="flightId" value="{{id}}">
+                <button type="submit" class="btn btn-primary">Book Now</button>
+            </form>
+        </div>
+    {{/flights}}
+
+    {{^flights}}
+        <p class="no-flights">No flights found for the selected criteria.</p>
+        {{#suggestedFlights}}
+            <h2>Suggested Flights:</h2>
+            <div class="flight">
+                <h2>Flight Number: {{flightNumber}}</h2>
+                <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
+                <p><strong>Departure:</strong> {{departureTime}}</p>
+                <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+                <form action="/reservas/crear" method="post">
+                    <input type="hidden" name="flightId" value="{{id}}">
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </form>
+            </div>
+        {{/suggestedFlights}}
+    {{/flights}}
 </main>
 
-<footer>
-    <p>&copy; 2025 AirBoss. All rights reserved.</p>
-</footer>
 </body>
 </html>

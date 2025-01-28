@@ -3,6 +3,7 @@ package io.aws.airboss.bookings;
 import io.aws.airboss.users.User;
 import io.aws.airboss.flights.Flight;
 import jakarta.persistence.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -25,6 +26,7 @@ public class Booking {
     @Column(nullable = false)
     private int numberOfSeats;
     
+    @NotNull
     @Column(nullable = false)
     private LocalDateTime bookingDate;
     

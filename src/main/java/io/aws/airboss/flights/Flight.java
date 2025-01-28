@@ -34,6 +34,8 @@ public class Flight {
     @Column(nullable = false, name = "airline_name")
     private String airlineName;
     
+
+    
     public Flight() {}
     
     public Flight(String origin, String destination, LocalDateTime departureTime, int totalSeats,
@@ -45,6 +47,7 @@ public class Flight {
         this.availableSeats = availableSeats;
         this.isAvailable = isAvailable;
         this.airlineName = airlineName;
+        
     }
     
     public Flight(String origin, String destination, String departureTime, int totalSeats, int availableSeats, boolean isAvailable, String airlineName) {
@@ -82,5 +85,19 @@ public class Flight {
     public String getAirlineName() { return airlineName; }
     public void setAirlineName(String airlineName) { this.airlineName = airlineName; }
     
+    
+    @Override
+    public String toString() {
+        return "Flight{" +
+              "flightId=" + flightId +
+              ", origin='" + origin + '\'' +
+              ", destination='" + destination + '\'' +
+              ", departureTime=" + departureTime +
+              ", totalSeats=" + totalSeats +
+              ", availableSeats=" + availableSeats +
+              ", isAvailable=" + isAvailable +
+              ", airlineName='" + airlineName + '\'' +
+              '}';
+    }
     
 }

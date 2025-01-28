@@ -1,4 +1,4 @@
-package io.aws.airboss.web.bookings;
+package io.aws.airboss.web;
 
 import io.aws.airboss.bookings.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,14 +16,14 @@ public interface BookingWebRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBookingsByUsername(@Param("username") String username);
     
     Optional<Booking> findById(Long id);
-
+    
+    
     @Query(value = """
         SELECT
             flight_number AS flightNumber,
             origin AS origin,
             destination AS destination,
-            departure_time AS departureTime,
-            arrival_time AS arrivalTime
+            departure_time AS departureTime
         FROM flights
         WHERE origin = :origin
           AND destination = :destination
@@ -35,5 +35,4 @@ public interface BookingWebRepository extends JpaRepository<Booking, Long> {
           @Param("destination") String destination,
           @Param("fromTime") LocalDateTime fromTime,
           @Param("toTime") LocalDateTime toTime);
-    
 }

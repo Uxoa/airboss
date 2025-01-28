@@ -7,19 +7,18 @@ import io.aws.airboss.bookings.BookingRepository;
 import io.aws.airboss.flights.Flight;
 import io.aws.airboss.roles.Role;
 import io.aws.airboss.users.User;
-import io.aws.airboss.web.bookings.BookingWebRepository;
-import io.aws.airboss.web.flights.FlightWebRepository;
+import io.aws.airboss.users.UserRepository;
 import io.aws.airboss.web.users.ProfileWebRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,25 +28,24 @@ public class GlobalWebServices {
     private final BookingRepository bookingRepository; // Asegúrate de declarar esta variable correctamente
     private final FlightWebRepository flightWebRepository;
     private final BookingWebRepository bookingWebRepository;
-    private final AirportsWeRepository airportsWeRepository;
     private final ProfileWebRepository profileWebRepository;
     private final AirportRepository airportRepository;
-
+    private final UserRepository userRepository;
+    
     
     @PersistenceContext
     private EntityManager entityManager;
     
     
     // Constructor con los repositorios necesarios
-    public GlobalWebServices(GlobalWebRepository globalWebRepository, BookingRepository bookingRepository, FlightWebRepository flightWebRepository, BookingWebRepository bookingWebRepository, AirportsWeRepository airportsWeRepository, ProfileWebRepository profileWebRepository, AirportRepository airportRepository, LocalContainerEntityManagerFactoryBean entityManager) {
+    public GlobalWebServices(GlobalWebRepository globalWebRepository, BookingRepository bookingRepository, FlightWebRepository flightWebRepository, BookingWebRepository bookingWebRepository, ProfileWebRepository profileWebRepository, AirportRepository airportRepository, UserRepository userRepository) {
         this.globalWebRepository = globalWebRepository;
-        this.bookingRepository = bookingRepository; // Inicialización correcta
+        this.bookingRepository = bookingRepository;
         this.flightWebRepository = flightWebRepository;
         this.bookingWebRepository = bookingWebRepository;
-        this.airportsWeRepository = airportsWeRepository;
         this.profileWebRepository = profileWebRepository;
         this.airportRepository = airportRepository;
-        this.entityManager = entityManager.getObject().createEntityManager();
+        this.userRepository = userRepository;
     }
     
     public Optional<User> findUserByUsername(String username) {
@@ -59,8 +57,6 @@ public class GlobalWebServices {
               .findLastLoginByUsername(username)
               .orElse(LocalDateTime.MIN); // Usa un valor por defecto
     }
-    
-    
     
     public Map<String, Object> getUserProfileData(String username) {
         User user = findUserByUsername(username)
@@ -91,14 +87,11 @@ public class GlobalWebServices {
     
     
     public List<Flight> searchFlights(String from, String to, String date) {
-        return entityManager.createQuery(
-                    "SELECT f FROM Flight f WHERE f.origin = :from AND f.destination = :to AND f.departureTime = :departureTime",
-                    Flight.class
-              )
-              .setParameter("from", from)
-              .setParameter("to", to)
-              .setParameter("departureTime", LocalDateTime.parse(date)) // Asegúrate de que el formato sea correcto
-              .getResultList();
+        LocalDateTime parsedDate = LocalDate.parse(date).atStartOfDay(); // Convertir fecha a LocalDateTime
+        LocalDateTime endOfDay = parsedDate.plusDays(1); // Fin del día seleccionado
+        
+        // Buscar vuelos que coincidan con origen, destino y fecha
+        return flightWebRepository.findFlightsByCriteria(from, to, parsedDate, endOfDay);
     }
     
     public Optional<Flight> findFlightById(Long flightId) {
@@ -109,7 +102,7 @@ public class GlobalWebServices {
         return  flightWebRepository.findFlightsByCriteria(origin, destination, fromTime, toTime);
     }
     
-    public void createBooking(String username, Long flightId) {
+  /*  public Booking createBooking(String username, Long flightId) {
         // Buscar el usuario por nombre de usuario
         User user = globalWebRepository.findUserByUsername(username)
               .orElseThrow(() -> new RuntimeException("User not found: " + username));
@@ -125,21 +118,39 @@ public class GlobalWebServices {
         
         // Guardar la reserva en el repositorio
         bookingRepository.save(booking);
-    }
-    
+        return booking;
+    }*/
+  public Long getUserIdByUsername(String username) {
+      User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+      return user.getUserId(); // Devuelve el ID del usuario
+  }
+  
     public void cancelBooking(String username, Long bookingId) {
-        // Validar si la reserva pertenece al usuario antes de cancelarla
+        // Buscar la reserva por ID
         Booking booking = bookingRepository.findById(bookingId)
               .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
         
+        // Verificar que el usuario sea el propietario de la reserva
         if (!booking.getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Unauthorized to cancel booking");
+            throw new RuntimeException("Unauthorized access to booking: " + bookingId);
         }
         
-        bookingRepository.deleteById(bookingId);
+        // Eliminar la reserva
+        bookingRepository.delete(booking);
+    }
+    
+    public List<Flight> findSuggestedFlights(String from, String to, LocalDate departureDate) {
+        LocalDateTime startOfDay = departureDate.atStartOfDay();
+        LocalDateTime endOfDay = departureDate.atTime(LocalTime.MAX);
+        LocalDateTime exactTime = LocalDateTime.of(departureDate, LocalTime.NOON);
+        
+        List<Flight> suggestedFlights = flightWebRepository.findFlightsBySameDayOtherTimes(from, to, startOfDay, endOfDay, exactTime);
+        System.out.println("Suggested Flights: " + suggestedFlights); // Debug log
+        return suggestedFlights;
     }
     
     
     
-
+    
 }

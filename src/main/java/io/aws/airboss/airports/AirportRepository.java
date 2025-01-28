@@ -6,4 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface AirportRepository extends JpaRepository<Airport, String> {
 
+
+
 }

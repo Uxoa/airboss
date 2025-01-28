@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/styles.css">
     <!-- Flatpickr CSS -->
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css" rel="stylesheet">
 </head>
 <body>
 <header>
@@ -41,9 +42,10 @@
         </div>
 
         <!-- Departure Time -->
-        <div class="form-group">
-            <label for="date">Departure Time:</label>
+        <div class="calendar-container">
+            <label for="calendar">Select Date:</label>
             <input id="calendar" type="text" name="date" placeholder="Pick a date" required>
+
         </div>
 
         <!-- Submit Button -->
@@ -54,6 +56,9 @@
 <footer>
     <p>&copy; 2025 AirBoss. All rights reserved.</p>
 </footer>
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script> <!-- Traducción español -->
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
@@ -102,5 +107,7 @@
                 .catch(error => console.error('Error loading dates:', error));
     });
 </script>
+
 </body>
 </html>
+.
