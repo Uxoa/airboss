@@ -39,7 +39,7 @@
             <p><strong>Departure:</strong> {{departureTime}}</p>
             <p><strong>Available Seats:</strong> {{availableSeats}}</p>
             <form action="/reservas/crear" method="post">
-                <input type="hidden" name="flightId" value="{{id}}">
+                <input type="hidden" name="flightId" value="{{flightId}}">
                 <button type="submit" class="btn btn-primary">Book Now</button>
             </form>
         </div>
@@ -55,7 +55,7 @@
                 <p><strong>Departure:</strong> {{departureTime}}</p>
                 <p><strong>Available Seats:</strong> {{availableSeats}}</p>
                 <form action="/reservas/crear" method="post">
-                    <input type="hidden" name="flightId" value="{{id}}">
+                    <input type="hidden" name="flightId" value="{{fightId}}">
                     <button type="submit" class="btn btn-primary">Book Now</button>
                 </form>
             </div>
