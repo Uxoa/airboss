@@ -1,7 +1,13 @@
+
+<img width="1199" alt="airbossPreview" src="https://github.com/user-attachments/assets/4570f087-d1c4-471e-a5c7-04fca486bece" />
+
+
+
 # **Gestor de Aerolíneas - AirBoss**
 
 Un sistema completo para la gestión eficiente de aerolíneas, diseñado para manejar usuarios, vuelos, reservas, aeropuertos y rutas con facilidad.
-![Captura de pantalla 2025-01-29 a las 16.53.59.png](../../../../../../../var/folders/vn/0m_hvhs14fv1by5156tdh93m0000gn/T/TemporaryItems/NSIRD_screencaptureui_njIKMa/Captura%20de%20pantalla%202025-01-29%20a%20las%2016.53.59.png)
+
+
 ## **Organización**
 https://trello.com/b/bwAVYMc1/aerolineas
 ---
@@ -17,7 +23,8 @@ https://trello.com/b/bwAVYMc1/aerolineas
 
 ## **Tecnologías Utilizadas**
 - **Backend**: Spring Boot
-- **Base de Datos**: MySQL
+- **Base de Datos**: MySQL<img width="1199" alt="airbossPreview" src="https://github.com/user-attachments/assets/478922ad-ed5c-4eab-8ec8-3ff2d5f8d2d1" />
+
 - **Frontend (Opcional)**: Thymeleaf / React
 - **Seguridad**: Spring Security
 - **Gestión de Dependencias**: Maven
