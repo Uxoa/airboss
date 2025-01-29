@@ -73,22 +73,17 @@
         flatpickr("#calendar", {
             altInput: true,
             altFormat: "F j, Y",
-            dateFormat: "Y-m-d", // Formato enviado al backend
-            locale: "es", // Idioma en español
+            dateFormat: "Y-m-d",
+            locale: "es",
             minDate: "today" // 📌 Evita seleccionar fechas anteriores a hoy
         });
 
-        // ✅ Cargar aeropuertos desde el backend
+        // ✅ Cargar aeropuertos
         fetch('/api/airports/allAirports')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error fetching airports');
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(airports => {
                     const fromDropdown = document.getElementById('from');
                     const toDropdown = document.getElementById('to');
-                    fromDropdown.innerHTML = '<option value="" disabled selected>Select your origin</option>';
-                    toDropdown.innerHTML = '<option value="" disabled selected>Select your destination</option>';
                     airports.forEach(airport => {
                         const option = `<option value="${airport.iataCode}">${airport.name}</option>`;
                         fromDropdown.insertAdjacentHTML('beforeend', option);
@@ -97,23 +92,19 @@
                 })
                 .catch(error => console.error('❌ Error loading airports:', error));
 
-        // ✅ Cargar fechas disponibles desde el backend
+        // ✅ Cargar fechas disponibles
         fetch('/api/flights/available-dates')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error fetching available dates');
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(flightDates => {
                     flatpickr("#calendar", {
-                        enable: flightDates, // Solo habilita fechas disponibles
+                        enable: flightDates,
                         dateFormat: "Y-m-d",
-                        minDate: "today" // 📌 Evita seleccionar fechas pasadas
+                        minDate: "today"
                     });
                 })
                 .catch(error => console.error('❌ Error loading dates:', error));
     });
 
-    // ✅ Buscar vuelos dinámicamente
     async function searchFlights() {
         const origin = document.getElementById('from').value;
         const destination = document.getElementById('to').value;
@@ -124,42 +115,11 @@
             return;
         }
 
-        try {
-            const response = await fetch(`/api/flights/search?origin=${origin}&destination=${destination}&date=${date}`);
-            if (!response.ok) throw new Error('No flights found.');
-
-            const flights = await response.json();
-            displayFlights(flights);
-        } catch (error) {
-            console.error('❌ Error fetching flights:', error);
-            alert('⚠️ Error fetching flights. Please try again.');
-        }
-    }
-
-    // ✅ Mostrar vuelos en la página
-    function displayFlights(flights) {
-        const resultsContainer = document.getElementById('results');
-        resultsContainer.innerHTML = ""; // Limpiar resultados anteriores
-
-        if (flights.length === 0) {
-            resultsContainer.innerHTML = "<p>No flights found for the selected criteria.</p>";
-            return;
-        }
-
-        flights.forEach(flight => {
-            const flightElement = document.createElement('div');
-            flightElement.className = 'flight';
-            flightElement.innerHTML = `
-                <h2>Flight Number: ${flight.flightId}</h2>
-                <p><strong>From:</strong> ${flight.origin} | <strong>To:</strong> ${flight.destination}</p>
-                <p><strong>Departure:</strong> ${flight.departureTime}</p>
-                <p><strong>Available Seats:</strong> ${flight.availableSeats}</p>
-                <button class="btn btn-secondary" onclick="alert('Booking flight ID: ${flight.flightId}')">Book Now</button>
-            `;
-            resultsContainer.appendChild(flightElement);
-        });
+        // 🔹 Redirige correctamente a `/flights/search/resultados`
+        window.location.href = `/flights/search/resultados?origin=${origin}&destination=${destination}&date=${date}`;
     }
 </script>
+
 
 </body>
 </html>
