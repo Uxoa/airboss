@@ -1,0 +1,76 @@
+@startuml
+
+entity profiles {
+    *profile_id : BIGINT [PK]
+    --
+    email : VARCHAR(255) [UNIQUE]
+    last_login : DATETIME
+    last_name : VARCHAR(255)
+    mobile : BIGINT
+    name : VARCHAR(255)
+    profile_image : VARCHAR(255)
+    registration_date : DATETIME
+}
+
+entity users {
+    *user_id : BIGINT [PK]
+    --
+    username : VARCHAR(255) [UNIQUE]
+    password : VARCHAR(255)
+    profile_id : BIGINT [FK]
+}
+
+entity roles {
+    *role_id : BIGINT [PK]
+    --
+    name : VARCHAR(255) [UNIQUE]
+}
+
+entity user_roles {
+    *user_id : BIGINT [FK]
+    *role_id : BIGINT [FK]
+}
+
+entity airports {
+    *airport_id : BIGINT [PK]
+    --
+    name : VARCHAR(255)
+    city : VARCHAR(255)
+    country_iso_code : VARCHAR(2)
+    iata_code : VARCHAR(3)
+}
+
+entity flights {
+    *flight_id : BIGINT [PK]
+    --
+    flight_number : VARCHAR(255) [UNIQUE]
+    departure : DATETIME
+    arrival : DATETIME
+    origin : BIGINT [FK] -> airports.airport_id
+    destination : BIGINT [FK] -> airports.airport_id
+    departure_time : DATETIME
+    total_seats : INT
+    available_seats : INT
+    is_available : BOOLEAN
+    airline_name : VARCHAR(255)
+}
+
+entity bookings {
+    *booking_id : BIGINT [PK]
+    --
+    user_id : BIGINT [FK] -> users.user_id
+    flight_id : BIGINT [FK] -> flights.flight_id
+    number_of_seats : INT
+    booking_date : DATETIME
+    status : ENUM('CREATED','CONFIRMED','PENDING','CANCELLED')
+}
+
+users -- profiles : "1" - "1"
+users -- user_roles : "1" - "*"
+user_roles -- roles : "*" - "1"
+bookings -- users : "*" - "1"
+bookings -- flights : "*" - "1"
+flights -- airports : "*" - "1" origin
+flights -- airports : "*" - "1" destination
+
+@enduml

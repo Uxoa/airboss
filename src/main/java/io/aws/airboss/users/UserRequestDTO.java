@@ -40,6 +40,22 @@ public class UserRequestDTO {
     }
     
     
+    public void setUsername(String updatedUser) {
+        this.username = updatedUser;
+    }
     
-
+    public void setPassword(String newPassword) {
+        this.password = newPassword;
+    }
+    
+    public void setRoles(List<String> roleAdmin) {
+        this.roles = roleAdmin;
+        
+    }
+    
+    public void setProfile(ProfileRequestDTO profile) {
+        this.profile = profile;
+    }
+    
+    
 }

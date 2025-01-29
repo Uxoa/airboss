@@ -11,10 +11,12 @@
 </head>
 <body>
 <header>
-    <div class="logo">
-        <img src="/images/logo01.png" alt="AirBoss Logo" style="height: 40px;">
-        <span style="font-size: 24px; font-weight: bold;">AirBoss</span>
-    </div>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
+        </div>
+        <span class="logo-text">AirBoss</span>
+    </a>
     <nav>
         <a href="/dashboard" class="nav-link">Dashboard</a>
         <a href="/perfil" class="nav-link">My Profile</a>
@@ -26,11 +28,11 @@
     <h1>Search Flights</h1>
 
     <!-- Formulario de búsqueda -->
-    <form action="/api/flights/search/resultados" method="get">
+    <form id="searchForm">
         <!-- Origen -->
         <div class="form-group">
             <label for="from">From:</label>
-            <select id="from" name="origin" required>
+            <select id="from" name="from" required>
                 <option value="" disabled selected>Select your origin</option>
             </select>
         </div>
@@ -38,7 +40,7 @@
         <!-- Destino -->
         <div class="form-group">
             <label for="to">To:</label>
-            <select id="to" name="destination" required>
+            <select id="to" name="to" required>
                 <option value="" disabled selected>Select your destination</option>
             </select>
         </div>
@@ -50,8 +52,11 @@
         </div>
 
         <!-- Botón para buscar vuelos -->
-        <button type="submit" class="btn btn-primary">Search Flights</button>
+        <button type="button" onclick="searchFlights()" class="btn btn-primary">Search Flights</button>
     </form>
+
+    <!-- Contenedor de resultados -->
+    <div id="results" class="results-container"></div>
 </main>
 
 <footer>
@@ -64,12 +69,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Cargar aeropuertos desde el backend
+        // ✅ Configurar Flatpickr con fecha mínima hoy
+        flatpickr("#calendar", {
+            altInput: true,
+            altFormat: "F j, Y",
+            dateFormat: "Y-m-d", // Formato enviado al backend
+            locale: "es", // Idioma en español
+            minDate: "today" // 📌 Evita seleccionar fechas anteriores a hoy
+        });
+
+        // ✅ Cargar aeropuertos desde el backend
         fetch('/api/airports/allAirports')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error fetching airports');
-                    }
+                    if (!response.ok) throw new Error('Error fetching airports');
                     return response.json();
                 })
                 .then(airports => {
@@ -83,24 +95,70 @@
                         toDropdown.insertAdjacentHTML('beforeend', option);
                     });
                 })
-                .catch(error => console.error('Error loading airports:', error));
+                .catch(error => console.error('❌ Error loading airports:', error));
 
-        // Cargar fechas disponibles
+        // ✅ Cargar fechas disponibles desde el backend
         fetch('/api/flights/available-dates')
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Error fetching available dates');
-                    }
+                    if (!response.ok) throw new Error('Error fetching available dates');
                     return response.json();
                 })
                 .then(flightDates => {
                     flatpickr("#calendar", {
-                        enable: flightDates,
-                        dateFormat: "Y-m-d"
+                        enable: flightDates, // Solo habilita fechas disponibles
+                        dateFormat: "Y-m-d",
+                        minDate: "today" // 📌 Evita seleccionar fechas pasadas
                     });
                 })
-                .catch(error => console.error('Error loading dates:', error));
+                .catch(error => console.error('❌ Error loading dates:', error));
     });
+
+    // ✅ Buscar vuelos dinámicamente
+    async function searchFlights() {
+        const origin = document.getElementById('from').value;
+        const destination = document.getElementById('to').value;
+        const date = document.getElementById('calendar').value;
+
+        if (!origin || !destination || !date) {
+            alert('⚠️ Please fill in all fields.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/flights/search?origin=${origin}&destination=${destination}&date=${date}`);
+            if (!response.ok) throw new Error('No flights found.');
+
+            const flights = await response.json();
+            displayFlights(flights);
+        } catch (error) {
+            console.error('❌ Error fetching flights:', error);
+            alert('⚠️ Error fetching flights. Please try again.');
+        }
+    }
+
+    // ✅ Mostrar vuelos en la página
+    function displayFlights(flights) {
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = ""; // Limpiar resultados anteriores
+
+        if (flights.length === 0) {
+            resultsContainer.innerHTML = "<p>No flights found for the selected criteria.</p>";
+            return;
+        }
+
+        flights.forEach(flight => {
+            const flightElement = document.createElement('div');
+            flightElement.className = 'flight';
+            flightElement.innerHTML = `
+                <h2>Flight Number: ${flight.flightId}</h2>
+                <p><strong>From:</strong> ${flight.origin} | <strong>To:</strong> ${flight.destination}</p>
+                <p><strong>Departure:</strong> ${flight.departureTime}</p>
+                <p><strong>Available Seats:</strong> ${flight.availableSeats}</p>
+                <button class="btn btn-secondary" onclick="alert('Booking flight ID: ${flight.flightId}')">Book Now</button>
+            `;
+            resultsContainer.appendChild(flightElement);
+        });
+    }
 </script>
 
 </body>

@@ -1,6 +1,5 @@
 package io.aws.airboss.users;
 
-import io.aws.airboss.users.User;
 import io.aws.airboss.roles.Role;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,7 @@ public class UserMapper {
             return null;
         }
         
-       UserResponseDTO userResponseDTO = new UserResponseDTO();
+       UserResponseDTO userResponseDTO = new UserResponseDTO("testuser");
         userResponseDTO.setUsername(user.getUsername());
         // Map other fields as needed
         return userResponseDTO;

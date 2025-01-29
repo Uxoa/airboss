@@ -21,15 +21,13 @@ public class UserResponseDTO {
         this.roles = new ArrayList<>();
     }
     
-    public UserResponseDTO() {
+    public UserResponseDTO(String testuser) {
     }
     
     public UserResponseDTO(Long id, String username, String name, String lastName, String email, Long mobile, List<String> roles) {
     }
     
-    public String getUsername() {
-        return username;
-    }
+    
     
     public void setUsername(String username) {
         this.username = username;
@@ -49,5 +47,9 @@ public class UserResponseDTO {
     
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+    
+    public String getUsername() {
+        return username;
     }
 }
