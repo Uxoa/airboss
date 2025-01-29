@@ -126,19 +126,6 @@ public class GlobalWebServices {
       return user.getUserId(); // Devuelve el ID del usuario
   }
   
-    public void cancelBooking(String username, Long bookingId) {
-        // Buscar la reserva por ID
-        Booking booking = bookingRepository.findById(bookingId)
-              .orElseThrow(() -> new RuntimeException("Booking not found: " + bookingId));
-        
-        // Verificar que el usuario sea el propietario de la reserva
-        if (!booking.getUser().getUsername().equals(username)) {
-            throw new RuntimeException("Unauthorized access to booking: " + bookingId);
-        }
-        
-        // Eliminar la reserva
-        bookingRepository.delete(booking);
-    }
     
     public List<Flight> findSuggestedFlights(String from, String to, LocalDate departureDate) {
         LocalDateTime startOfDay = departureDate.atStartOfDay();

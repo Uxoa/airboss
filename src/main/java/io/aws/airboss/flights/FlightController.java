@@ -1,57 +1,66 @@
 package io.aws.airboss.flights;
 
-import io.aws.airboss.airports.Airport;
-import io.aws.airboss.airports.AirportRepository;
-import org.jetbrains.annotations.NotNull;
+import io.aws.airboss.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-@RestController
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Controller  // ❌ No maneja vistas Mustache, solo JSON
 @RequestMapping("/api/flights")
 public class FlightController {
     
-    @Autowired
-    private FlightService flightService;
-    @Autowired
-    private FlightRepository flightRepository;
-    @Autowired
-    private AirportRepository airportRepository;
+    private final IFlightService IFlightService;
+    private final UserService userService;
     
-    @GetMapping("/api/search")
-    public List<Flight> searchFlights(
+    @Autowired
+    public FlightController(IFlightService IFlightService, UserService userService) {
+        this.IFlightService = IFlightService;
+        this.userService = userService;
+    }
+    
+    // ✅ Modificar para retornar una plantilla Mustache
+    @GetMapping("/search/resultados")
+    public String searchFlights(
           @RequestParam String origin,
           @RequestParam String destination,
           @RequestParam String date,
-          @RequestParam int seats) {
+          Model model,
+          Principal principal) { // Obtener el usuario autenticado
         
-        LocalDateTime departureDate = LocalDateTime.parse(date);
-        return flightService.searchFlights(origin, destination, departureDate, seats);
+        LocalDate departureDate = LocalDate.parse(date);
+        List<FlightDTO> flights = IFlightService.searchFlights(origin, destination, departureDate);
+        
+        if (flights.isEmpty()) {
+            model.addAttribute("error", "No flights found for the selected criteria.");
+        } else {
+            model.addAttribute("flights", flights);
+        }
+        
+        // Obtener userId del usuario autenticado y pasarlo a la plantilla
+        String username = principal.getName();
+        Long userId = userService.getUserIdByUsername(username);
+        model.addAttribute("userId", userId);
+        
+        model.addAttribute("title", "Search Results");
+        
+        return "resultados";
     }
     
-    @PutMapping("/{id}/update")
-    public void updateFlightAvailability(@PathVariable Long id) {
-        flightService.updateFlightAvailability(id);
-    }
     
     
+    // ✅ API para obtener fechas disponibles
     @GetMapping("/available-dates")
-    public ResponseEntity<List<Map<@NotNull String, @NotNull String>>> getAvailableFlightDates() {
-        List<Flight> flights = flightRepository.findAll(); // Use appropriate query to filter dates if needed.
-        List<Map<@org.jetbrains.annotations.NotNull String, @org.jetbrains.annotations.NotNull String>> response = flights.stream()
-              .map(flight -> Map.of(
-                    "date", flight.getDepartureTime().toLocalDate().toString(),
-                    "time", flight.getDepartureTime().toLocalTime().toString()
-              ))
-              .collect(Collectors.toList()).reversed();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<List<String>> getAvailableFlightDates() {
+        List<String> availableDates = IFlightService.getAvailableFlightDates();
+        return ResponseEntity.ok(availableDates);
     }
     
-  
 }

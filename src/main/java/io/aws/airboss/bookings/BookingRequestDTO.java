@@ -1,14 +1,11 @@
+// Actualizar BookingRequestDTO
 package io.aws.airboss.bookings;
 
 public class BookingRequestDTO {
     private Long userId;
     private Long flightId;
-    private int numberOfSeats;
+    private int availableSeats;
     
-    public BookingRequestDTO() {
-    }
-    
-    // Getters y setters
     public Long getUserId() {
         return userId;
     }
@@ -25,11 +22,11 @@ public class BookingRequestDTO {
         this.flightId = flightId;
     }
     
-    public int getNumberOfSeats() {
-        return numberOfSeats;
+    public int getAvailableSeats() {
+        return availableSeats;
     }
     
-    public void setNumberOfSeats(int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
+    public void setAvailableSeats(int availableSeats) {
+        this.availableSeats = availableSeats;
     }
 }

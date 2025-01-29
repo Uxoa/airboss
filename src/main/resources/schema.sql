@@ -74,7 +74,8 @@ CREATE TABLE IF NOT EXISTS bookings (
                                         flight_id BIGINT NOT NULL,
                                         number_of_seats INT NOT NULL,
                                         booking_date DATETIME NOT NULL,
-                                        status ENUM('CONFIRMED', 'PENDING', 'CANCELLED') NOT NULL,
+                                        status ENUM('CREATED','CONFIRMED','PENDING','CANCELLED')
+                                            NOT NULL,
                                         CONSTRAINT fk_user_booking FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
                                         CONSTRAINT fk_flight_booking FOREIGN KEY (flight_id) REFERENCES flights(flight_id) ON DELETE CASCADE
 );

@@ -1,16 +1,13 @@
 package io.aws.airboss.flights;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-@Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> {
+    // Consulta para buscar vuelos con los criterios dados
     List<Flight> findByOriginAndDestinationAndDepartureTimeAfterAndAvailableSeatsGreaterThan(
           String origin, String destination, LocalDateTime date, int minSeats);
-    
-    }
+}
 

@@ -718,9 +718,3 @@ select:focus, input[type="datetime-local"]:focus {
     cursor: pointer;
 }
 
-.flatpickr-calendar {
-    z-index: 9999 !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}

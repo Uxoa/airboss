@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
+        </div>
+        <span class="logo-text">AirBoss</span>
+    </a>
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/perfil">My Profile</a>
+        <a href="/reservas/view">My Bookings</a>
+        <a href="/logout">Logout</a>
+    </nav>
+</header>
+
+
+<main class="search-container">
+    <h1>{{title}}</h1>
+
+    {{#error}}
+        <div class="error-message">
+            <p>{{error}}</p>
+        </div>
+    {{/error}}
+
+    {{#flights}}
+        <div class="flight">
+            <h2>Flight Number: {{flightId}}</h2>
+            <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
+            <p><strong>Departure:</strong> {{departureTime}}</p>
+            <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+            <form id="bookingForm-{{flightId}}">
+                <input type="hidden" id="flightId-{{flightId}}" value="{{flightId}}">
+                <input type="hidden" id="userId" value="{{userId}}">
+                <label for="availableSeats-{{flightId}}">Seats to Reserve:</label>
+                <input type="number" id="availableSeats-{{flightId}}" min="1" max="{{availableSeats}}" required>
+                <button type="button" class="btn btn-primary" onclick="submitBooking('{{flightId}}')">Book Now</button>
+            </form>
+        </div>
+    {{/flights}}
+
+    <script>
+        async function submitBooking(flightId) {
+            console.log("📤 Enviando reserva para Flight ID:", flightId); // 🔍 Debug
+
+            const userId = document.getElementById('userId').value;
+            const availableSeats = parseInt(document.getElementById(`availableSeats-${flightId}`).value);
+
+            if (!userId || !flightId || isNaN(availableSeats)) {
+                alert("⚠️ Error: Missing data. Please check your inputs.");
+                return;
+            }
+
+            const requestData = { userId, flightId, availableSeats };
+
+            try {
+                const response = await fetch('/api/bookings/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (response.ok) {
+                    const redirectUrl = await response.text();
+                    console.log("🔀 Redirigiendo a:", redirectUrl); // 🔍 Debug
+                    window.location.href = redirectUrl; // ✅ Redirigir a `/reservas/confirmacion?bookingId=...`
+                } else {
+                    const errorText = await response.text();
+                    console.error("❌ Error en reserva:", errorText);
+                    alert(`⚠️ Error: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('🚨 Error en submitBooking:', error);
+                alert('❌ An unexpected error occurred.');
+            }
+        }
+    </script>
+
+    {{^flights}}
+        <p class="no-flights">No flights found for the selected criteria.</p>
+        {{#suggestedFlights}}
+            <h2>Suggested Flights:</h2>
+            <div class="flight">
+                <h2>Flight Number: {{flightId}}</h2>
+                <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
+                <p><strong>Departure:</strong> {{departureTime}}</p>
+                <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+
+                <form action="/api/bookings/create" method="post">
+                    <input type="hidden" name="flightId" value="{{flightId}}">
+                    <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+                    <label for="availableSeats-{{flightId}}">Number of Seats to Reserve:</label>
+                    <input type="number" name="availableSeats" id="availableSeats-{{flightId}}" min="1" max="{{availableSeats}}" required>
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </form>
+
+
+            </div>
+        {{/suggestedFlights}}
+    {{/flights}}
+
+
+
+    <a href="/search" class="btn">Back to search</a>
+</main>
+</body>
+</html>

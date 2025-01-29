@@ -17,7 +17,7 @@
     <nav>
         <a href="/perfil">My Profile</a>
         <a href="/reservas/view">My Bookings</a>
-        <a href="/buscar">Search Flights</a>
+        <a href="/search">Search Flights</a>
         <a href="/logout">Logout</a>
     </nav>
 </header>
@@ -41,5 +41,28 @@
 <footer>
     <p>© 2025 AirBoss. Todos los derechos reservados.</p>
 </footer>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const response = await fetch('/api/bookings/me');
+        if (response.ok) {
+            const bookings = await response.json();
+            const container = document.querySelector('.reservas-list');
+            bookings.forEach(booking => {
+                const item = document.createElement('article');
+                item.className = 'reserva-item';
+                item.innerHTML = `
+                    <p><strong>Reserva ID:</strong> ${booking.bookingId}</p>
+                    <p><strong>Vuelo:</strong> ${booking.flight.flightId}</p>
+                    <p><strong>Fecha:</strong> ${booking.bookingDate}</p>
+                    <p><strong>Estado:</strong> ${booking.status}</p>
+                `;
+                container.appendChild(item);
+            });
+        } else {
+            alert('Error al cargar las reservas.');
+        }
+    });
+</script>
+
 </body>
 </html>

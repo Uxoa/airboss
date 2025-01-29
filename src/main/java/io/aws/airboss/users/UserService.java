@@ -112,4 +112,11 @@ public class UserService {
               .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return userMapper.toResponseDTO(user);
     }
+    
+    public Long getUserIdByUsername(String username) {
+        return userRepository.findByUsername(username)
+              .map(User::getUserId) // Suponiendo que User tiene un método getId()
+              .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+    
 }

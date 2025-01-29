@@ -1,71 +1,74 @@
 package io.aws.airboss.bookings;
 
-import io.aws.airboss.auth.CustomUserDetailsService;
-import io.aws.airboss.users.User;
-import io.aws.airboss.users.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller // ✅ Cambiado a @Controller para usar plantillas Mustache
 @RequestMapping("/api/bookings")
 public class BookingController {
     
-    @Autowired
-    private BookingService bookingService;
+    private final IBookingService bookingService;
+    private final BookingRepository bookingRepository;
     
     @Autowired
-    private BookingRepository bookingRepository;
-    
-    @Autowired
-    private CustomUserDetailsService customUserDetails;
-    @Autowired
-    private UserRepository userRepository;
-    
-    @GetMapping("/me")
-    public ResponseEntity<List<Booking>> getMyBookings(Authentication authentication) {
-        // Extrae el userId del token JWT
-        String username = authentication.getName(); // Devuelve el "sub" del token
-        User user = userRepository.findByUsername(username)
-              .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return ResponseEntity.ok(bookingRepository.findByUser_UserId(user.getUserId()));
+    public BookingController(IBookingService bookingService, BookingRepository bookingRepository) {
+        this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
     }
     
+    // ✅ CREAR RESERVA Y REDIRIGIR A LA CONFIRMACIÓN
+    @PostMapping("/create")
+    public String createBooking(@RequestBody BookingRequestDTO request) {
+        Booking booking = bookingService.createBooking(request.getUserId(), request.getFlightId(), request.getAvailableSeats());
+        
+        if (booking == null) {
+            return "redirect:/error?message=Error processing booking"; // ✅ Redirige a error.mustache si falla
+        }
+        
+        return "redirect:/reservas/confirmacion?bookingId=" + booking.getBookingId(); // ✅ Redirige a confirmación
+    }
     
+    // ✅ MOSTRAR CONFIRMACIÓN DE RESERVA
+    @GetMapping("/confirmacion")
+    public String showConfirmation(@RequestParam Long bookingId, Model model) {
+        Booking booking = bookingService.getBookingById(bookingId);
+        if (booking == null) {
+            return "redirect:/error?message=Booking not found"; // ✅ Manejo de error si no se encuentra la reserva
+        }
+        
+        model.addAttribute("booking", booking);
+        return "confirmacion"; // ✅ Renderiza `confirmacion.mustache`
+    }
     
-    @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingRequestDTO request) {
-        Booking booking = bookingService.createBooking(request.getUserId(), request.getFlightId(), request.getNumberOfSeats());
+    // ✅ OBTENER TODAS LAS RESERVAS
+    @GetMapping("/all")
+    public ResponseEntity<List<Booking>> getAllBookings() {
+        return ResponseEntity.ok(bookingService.getAllBookings());
+    }
+    
+    // ✅ OBTENER RESERVA POR ID
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<Booking> getBookingById(@PathVariable Long bookingId) {
+        Booking booking = bookingService.getBookingById(bookingId);
         return ResponseEntity.ok(booking);
     }
     
-    @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingRepository.findAll();
-        return ResponseEntity.ok(bookings);
-    }
-    
+    // ✅ CONFIRMAR RESERVA
     @PostMapping("/confirm/{bookingId}")
     public ResponseEntity<String> confirmBooking(@PathVariable Long bookingId) {
-        try {
-            bookingService.confirmBooking(bookingId);
-            return ResponseEntity.ok("Reserva confirmada exitosamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        bookingService.confirmBooking(bookingId);
+        return ResponseEntity.ok("/reservas/confirmacion?bookingId=" + bookingId);
     }
     
+    // ✅ CANCELAR RESERVA
     @PostMapping("/cancel/{bookingId}")
-    public ResponseEntity<String> cancelBooking(@PathVariable Long bookingId) {
-        try {
-            bookingService.cancelBooking(bookingId);
-            return ResponseEntity.ok("Reserva cancelada exitosamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Void> cancelBooking(@PathVariable Long bookingId) {
+        bookingService.cancelBooking(bookingId);
+        return ResponseEntity.noContent().build();
     }
-    
 }

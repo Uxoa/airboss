@@ -18,7 +18,7 @@
         <td th:text="${booking.bookingId}"></td>
         <td th:text="${booking.user.username}"></td>
         <td th:text="${booking.flight.flightNumber}"></td>
-        <td th:text="${booking.numberOfSeats}"></td>
+        <td th:text="${booking.availableSeats}"></td>
         <td th:text="${booking.status}"></td>
         <td>
             <a th:href="@{/bookings/{id}(id=${booking.bookingId})}">Detalles</a>

@@ -41,15 +41,6 @@ VALUES
 INSERT INTO flights (flight_number, departure, arrival, origin, destination, departure_time, total_seats, available_seats, is_available, airline_name)
 VALUES
 
-    -- 28 de enero
-    ('FL802', '2025-01-28 08:00:00', '2025-01-28 12:00:00', 'JFK', 'ORD', '2025-01-28 08:00:00', 200, 180, TRUE, 'American Airlines'),
-    ('FL823', '2025-01-28 13:00:00', '2025-01-28 16:00:00', 'ORD', 'ATL', '2025-01-28 13:00:00', 180, 170, TRUE, 'Delta Airlines'),
-    ('FL824', '2025-01-28 17:00:00', '2025-01-28 20:00:00', 'ATL', 'MIA', '2025-01-28 17:00:00', 150, 140, TRUE, 'Spirit Airlines'),
-
-    -- 29 de enero
-    ('FL803', '2025-01-29 08:00:00', '2025-01-29 12:00:00', 'LAX', 'SEA', '2025-01-29 08:00:00', 150, 100, TRUE, 'United Airlines'),
-    ('FL825', '2025-01-29 14:00:00', '2025-01-29 18:00:00', 'SEA', 'JFK', '2025-01-29 14:00:00', 200, 180, TRUE, 'JetBlue'),
-
     -- 30 de enero
     ('FL804', '2025-01-30 06:00:00', '2025-01-30 09:00:00', 'ORD', 'ATL', '2025-01-30 06:00:00', 120, 60, TRUE, 'Southwest Airlines'),
     ('FL826', '2025-01-30 10:00:00', '2025-01-30 13:30:00', 'ATL', 'SEA', '2025-01-30 10:00:00', 150, 140, TRUE, 'Frontier Airlines'),

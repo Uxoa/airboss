@@ -37,11 +37,11 @@ public class Booking {
     // Constructores
     public Booking() {}
     
-    public Booking(User user, Flight flight, int numberOfSeats, BookingStatus status) {
+    public Booking(User user, Flight flight, int numberOfSeats, LocalDateTime bookingDate, BookingStatus status) {
         this.user = user;
         this.flight = flight;
         this.numberOfSeats = numberOfSeats;
-        this.bookingDate = LocalDateTime.now();
+        this.bookingDate = bookingDate;
         this.status = status;
     }
     
@@ -56,7 +56,7 @@ public class Booking {
     public void setFlight(Flight flight) { this.flight = flight; }
     
     public int getNumberOfSeats() { return numberOfSeats; }
-    public void setNumberOfSeats(int numberOfSeats) { this.numberOfSeats = numberOfSeats; }
+    public void setNumberOfSeats(int availableSeats) { this.numberOfSeats = availableSeats; }
     
     public LocalDateTime getBookingDate() { return bookingDate; }
     public void setBookingDate(LocalDateTime bookingDate) { this.bookingDate = bookingDate; }

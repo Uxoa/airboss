@@ -16,55 +16,56 @@
         <span style="font-size: 24px; font-weight: bold;">AirBoss</span>
     </div>
     <nav>
-        <a href="/dashboard" style="color: white; text-decoration: none; margin-right: 15px;">Dashboard</a>
-        <a href="/perfil" style="color: white; text-decoration: none; margin-right: 15px;">My Profile</a>
-        <a href="/logout" style="color: white; text-decoration: none;">Logout</a>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+        <a href="/perfil" class="nav-link">My Profile</a>
+        <a href="/logout" class="nav-link">Logout</a>
     </nav>
 </header>
 
 <main class="search-container">
     <h1>Search Flights</h1>
-    <form action="/buscar/resultados" method="get" class="search-form">
-        <!-- Origin -->
+
+    <!-- Formulario de búsqueda -->
+    <form action="/api/flights/search/resultados" method="get">
+        <!-- Origen -->
         <div class="form-group">
             <label for="from">From:</label>
-            <select id="from" name="from" required>
+            <select id="from" name="origin" required>
                 <option value="" disabled selected>Select your origin</option>
             </select>
         </div>
 
-        <!-- Destination -->
+        <!-- Destino -->
         <div class="form-group">
             <label for="to">To:</label>
-            <select id="to" name="to" required>
+            <select id="to" name="destination" required>
                 <option value="" disabled selected>Select your destination</option>
             </select>
         </div>
 
-        <!-- Departure Time -->
-        <div class="calendar-container">
+        <!-- Fecha de salida -->
+        <div class="form-group">
             <label for="calendar">Select Date:</label>
             <input id="calendar" type="text" name="date" placeholder="Pick a date" required>
-
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary">Search</button>
+        <!-- Botón para buscar vuelos -->
+        <button type="submit" class="btn btn-primary">Search Flights</button>
     </form>
 </main>
 
 <footer>
     <p>&copy; 2025 AirBoss. All rights reserved.</p>
 </footer>
+
 <!-- Flatpickr JS -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script> <!-- Traducción español -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Cargar aeropuertos desde el backend
-        fetch('/api/airports/allAirports') // Asegúrate de que el endpoint es correcto
+        fetch('/api/airports/allAirports')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error fetching airports');
@@ -85,23 +86,17 @@
                 .catch(error => console.error('Error loading airports:', error));
 
         // Cargar fechas disponibles
-        fetch('/api/flights/available-dates') // Asegúrate de que el endpoint es correcto
+        fetch('/api/flights/available-dates')
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Error fetching available dates');
                     }
                     return response.json();
                 })
-                .then(flights => {
-                    const highlightedDates = flights.map(flight => flight.date);
-
+                .then(flightDates => {
                     flatpickr("#calendar", {
-                        enable: highlightedDates,
-                        dateFormat: "Y-m-d",
-                        onChange: (selectedDates, dateStr) => {
-                            const flightsOnDay = flights.filter(flight => flight.date === dateStr);
-                            console.log(`Flights on ${dateStr}:`, flightsOnDay);
-                        }
+                        enable: flightDates,
+                        dateFormat: "Y-m-d"
                     });
                 })
                 .catch(error => console.error('Error loading dates:', error));
@@ -110,4 +105,3 @@
 
 </body>
 </html>
-.
