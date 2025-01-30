@@ -75,21 +75,26 @@
                 body: JSON.stringify(requestData)
             });
 
-            if (response.ok) {
-                const redirectUrl = await response.text();
-                console.log("🔀 Redirigiendo a:", redirectUrl);
-                window.location.href = redirectUrl;
-            } else {
-                const errorText = await response.text();
-                console.error("❌ Error en reserva:", errorText);
-                alert(`⚠️ Error: ${errorText}`);
+            if (!response.ok) {
+                throw new Error(await response.text()); // ✅ Captura errores del backend
             }
+
+            const redirectUrl = await response.text();
+            console.log("🔀 Redirigiendo a:", redirectUrl);
+
+            // ✅ Verifica que la respuesta sea una URL válida antes de redirigir
+            if (!redirectUrl.startsWith("/api/bookings/confirm")) {
+                throw new Error("Unexpected response from server.");
+            }
+
+            window.location.href = redirectUrl;
         } catch (error) {
-            console.error('🚨 Error en submitBooking:', error);
-            alert('❌ An unexpected error occurred.');
+            console.error("❌ Error en reserva:", error);
+            alert(`⚠️ Error: ${error.message}`);
         }
     }
+
 </script>
 
-</body>
+    </body>
 </html>

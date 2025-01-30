@@ -69,56 +69,63 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // ✅ Configurar Flatpickr con fecha mínima hoy
+        initCalendar();
+        loadAirports();
+    });
+
+    function initCalendar() {
         flatpickr("#calendar", {
             altInput: true,
             altFormat: "F j, Y",
             dateFormat: "Y-m-d",
             locale: "es",
-            minDate: "today" // 📌 Evita seleccionar fechas anteriores a hoy
+            minDate: "today"
         });
+    }
 
-        // ✅ Cargar aeropuertos
-        fetch('/api/airports/allAirports')
-                .then(response => response.json())
-                .then(airports => {
-                    const fromDropdown = document.getElementById('from');
-                    const toDropdown = document.getElementById('to');
-                    airports.forEach(airport => {
-                        const option = `<option value="${airport.iataCode}">${airport.name}</option>`;
-                        fromDropdown.insertAdjacentHTML('beforeend', option);
-                        toDropdown.insertAdjacentHTML('beforeend', option);
-                    });
-                })
-                .catch(error => console.error('❌ Error loading airports:', error));
+    async function loadAirports() {
+        try {
+            const response = await fetch('/api/airports/allAirports');
+            if (!response.ok) throw new Error('Error fetching airports');
 
-        // ✅ Cargar fechas disponibles
-        fetch('/api/flights/available-dates')
-                .then(response => response.json())
-                .then(flightDates => {
-                    flatpickr("#calendar", {
-                        enable: flightDates,
-                        dateFormat: "Y-m-d",
-                        minDate: "today"
-                    });
-                })
-                .catch(error => console.error('❌ Error loading dates:', error));
-    });
+            const airports = await response.json();
+            populateDropdown('from', airports);
+            populateDropdown('to', airports);
+        } catch (error) {
+            console.error('❌ Error loading airports:', error);
+        }
+    }
 
-    async function searchFlights() {
+    function populateDropdown(elementId, airports) {
+        const dropdown = document.getElementById(elementId);
+        dropdown.innerHTML = '<option value="" disabled selected>Select an option</option>';
+        airports.forEach(airport => {
+            const option = `<option value="${airport.iataCode}">${airport.name}</option>`;
+            dropdown.insertAdjacentHTML('beforeend', option);
+        });
+    }
+
+    function searchFlights() {
         const origin = document.getElementById('from').value;
         const destination = document.getElementById('to').value;
         const date = document.getElementById('calendar').value;
+
+        console.log("🔍 Datos enviados al backend:");
+        console.log("Origin:", origin);
+        console.log("Destination:", destination);
+        console.log("Date:", date);
 
         if (!origin || !destination || !date) {
             alert('⚠️ Please fill in all fields.');
             return;
         }
 
-        // 🔹 Redirige correctamente a `/flights/search/resultados`
-        window.location.href = `/flights/search/resultados?origin=${origin}&destination=${destination}&date=${date}`;
+        // ✅ Corrige la URL para asegurarte de que incluye los parámetros correctamente
+        window.location.href = `/flights/search/resultados?origin=${encodeURIComponent(origin)
+        }&destination=${encodeURIComponent(destination)}&date=${encodeURIComponent(date)}`;
     }
 </script>
+
 
 
 </body>
