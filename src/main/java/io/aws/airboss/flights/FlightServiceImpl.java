@@ -18,6 +18,11 @@ public class FlightServiceImpl implements IFlightService {
     }
     
     @Override
+    public Flight getFlightById(Long flightId) {
+        return flightRepository.findById(flightId)
+              .orElseThrow(() -> new RuntimeException("Flight not found with ID: " + flightId));
+    }
+    @Override
     public List<FlightDTO> searchFlights(String origin, String destination, LocalDate date) {
         return flightRepository.findByOriginAndDestinationAndDepartureTimeAfterAndAvailableSeatsGreaterThan(
               origin, destination, date.atStartOfDay(), 0

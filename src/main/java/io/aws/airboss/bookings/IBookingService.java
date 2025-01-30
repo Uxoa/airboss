@@ -9,4 +9,6 @@ public interface IBookingService {
     void cancelBooking(Long bookingId);
     List<Booking> getAllBookings();
     Booking getBookingById(Long bookingId);
+    
+    Booking saveBooking(Booking booking);
 }

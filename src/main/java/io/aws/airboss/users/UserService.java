@@ -119,4 +119,7 @@ public class UserService {
               .orElseThrow(() -> new RuntimeException("User not found"));
     }
     
+    public User convertToEntity(UserResponseDTO user) {
+        return userMapper.toEntity(user);
+    }
 }

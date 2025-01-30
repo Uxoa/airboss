@@ -32,69 +32,59 @@
     {{/error}}
 
     {{#flights}}
-        <div class="flight">
-            <h2>Flight Number: {{flightId}}</h2>
-            <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
-            <p><strong>Departure:</strong> {{departureTime}}</p>
-            <p><strong>Available Seats:</strong> {{availableSeats}}</p>
+    <div class="flight">
+        <h2>Flight Number: {{flightId}}</h2>
+        <p><strong>From:</strong> {{origin}} | <strong>To:</strong> {{destination}}</p>
+        <p><strong>Departure:</strong> {{departureTime}}</p>
+        <p><strong>Available Seats:</strong> {{availableSeats}}</p>
 
-            <form id="bookingForm-{{flightId}}">
-                <input type="hidden" name="flightId" value="{{flightId}}">
-                <input type="hidden" id="userId-{{flightId}}" value="{{userId}}"> <!-- ✅ Se asegura de pasar userId -->
-                <label for="availableSeats-{{flightId}}">Seats to Reserve:</label>
-                <input type="number" id="availableSeats-{{flightId}}" min="1" max="{{availableSeats}}" required>
-                <button type="button" class="btn btn-primary" onclick="submitBooking('{{flightId}}', '{{userId}}')">Book Now</button>
-            </form>
-        </div>
+        <form id="bookingForm-{{flightId}}">
+            <input type="hidden" id="userId-{{flightId}}" value="{{userId}}">
+            <input type="hidden" name="flightId" value="{{flightId}}">
+            <label for="availableSeats-{{flightId}}">Seats to Reserve:</label>
+            <input type="number" id="availableSeats-{{flightId}}" min="1" max="{{availableSeats}}" required>
+            <button type="button" class="btn btn-primary" onclick="submitBooking('{{flightId}}')">Book Now</button>
+        </form>
     {{/flights}}
+    <script>
+        document.getElementById('submitBooking').addEventListener('click', async () => {
+            const userId = document.getElementById('userId').value;
+            const flightId = document.getElementById('flightId').value;
+            const availableSeats = document.getElementById('availableSeats').value;
 
-    {{^flights}}
-        <p class="no-flights">No flights found for the selected criteria.</p>
-    {{/flights}}
+            if (!userId || !flightId || isNaN(availableSeats)) {
+                alert("⚠️ Error: Missing data. Please check your inputs.");
+                return;
+            }
 
-    <a href="/search" class="btn">Back to search</a>
+            const requestData = {
+                userId: userId,
+                flightId: flightId,
+                availableSeats: parseInt(availableSeats)
+            };
+
+            try {
+                const response = await fetch('/api/bookings/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) throw new Error(await response.text());
+
+                const redirectUrl = await response.text();
+                window.location.href = redirectUrl;
+            } catch (error) {
+                console.error("❌ Error en reserva:", error);
+                alert(`⚠️ Error: ${error.message}`);
+            }
+        }
+    </script>
+</div>
+
 </main>
-
-<script>
-    async function submitBooking(flightId, userId) {
-        console.log("📤 Enviando reserva para Flight ID:", flightId, "User ID:", userId);
-
-        const availableSeats = parseInt(document.getElementById(`availableSeats-${flightId}`).value);
-
-        if (!userId || !flightId || isNaN(availableSeats)) {
-            alert("⚠️ Error: Missing data. Please check your inputs.");
-            return;
-        }
-
-        const requestData = { userId, flightId, availableSeats };
-
-        try {
-            const response = await fetch('/api/bookings/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestData)
-            });
-
-            if (!response.ok) {
-                throw new Error(await response.text()); // ✅ Captura errores del backend
-            }
-
-            const redirectUrl = await response.text();
-            console.log("🔀 Redirigiendo a:", redirectUrl);
-
-            // ✅ Verifica que la respuesta sea una URL válida antes de redirigir
-            if (!redirectUrl.startsWith("/api/bookings/confirm")) {
-                throw new Error("Unexpected response from server.");
-            }
-
-            window.location.href = redirectUrl;
-        } catch (error) {
-            console.error("❌ Error en reserva:", error);
-            alert(`⚠️ Error: ${error.message}`);
-        }
-    }
-
-</script>
-
-    </body>
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved. <a href="/terms">Terms of Service</a></p>
+</footer>
+</body>
 </html>

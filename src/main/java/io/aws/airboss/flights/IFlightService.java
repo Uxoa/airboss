@@ -6,4 +6,6 @@ import java.util.List;
 public interface IFlightService {
     List<FlightDTO> searchFlights(String origin, String destination, LocalDate date);
     List<String> getAvailableFlightDates();
+    Flight getFlightById(Long flightId);
+    
 }

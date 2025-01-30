@@ -1,4 +1,3 @@
-// Implementación de BookingService
 package io.aws.airboss.bookings;
 
 import io.aws.airboss.bookings.exceptions.NoAvailableSeatsException;
@@ -37,29 +36,27 @@ public class BookingServiceImpl implements IBookingService {
             throw new RuntimeException("Not enough available seats");
         }
         
-        // ✅ Crear y asignar valores a la reserva
         Booking booking = new Booking();
         booking.setUser(userRepository.findById(userId)
               .orElseThrow(() -> new RuntimeException("User not found")));
         booking.setFlight(flight);
         booking.setNumberOfSeats(availableSeats);
         booking.setStatus(BookingStatus.CREATED);
-        
-        // 🔥 🔥 Asignar la fecha de la reserva 🔥 🔥
         booking.setBookingDate(LocalDateTime.now());
         
-        // ✅ Guardar la reserva en la base de datos
         Booking savedBooking = bookingRepository.save(booking);
-        System.out.println("🚀 Booking creada con ID: " + savedBooking.getBookingId()); // Debug
+        System.out.println("🚀 Booking creada con ID: " + savedBooking.getBookingId());
         
-        // ✅ Actualizar asientos disponibles en el vuelo
         flight.setAvailableSeats(flight.getAvailableSeats() - availableSeats);
         flightRepository.save(flight);
         
         return savedBooking;
     }
     
-    
+    @Override
+    public Booking saveBooking(Booking booking) {
+        return bookingRepository.save(booking);
+    }
     
     @Override
     public List<Booking> getAllBookings() {

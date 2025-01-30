@@ -57,4 +57,15 @@ public class UserMapper {
         }
         return roles;
     }
+    
+    public User toEntity(UserResponseDTO user) {
+        if (user == null) {
+            return null;
+        }
+        
+        User userEntity = new User();
+        userEntity.setUsername(user.getUsername());
+        // Map other fields as needed
+        return userEntity;
+    }
 }

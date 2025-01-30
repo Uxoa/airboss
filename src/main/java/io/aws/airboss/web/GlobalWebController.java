@@ -1,22 +1,16 @@
 package io.aws.airboss.web;
 
-import io.aws.airboss.airports.AirportRepository;
-import io.aws.airboss.bookings.Booking;
 import io.aws.airboss.bookings.BookingServiceImpl;
-import io.aws.airboss.flights.Flight;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/")
@@ -83,6 +77,6 @@ public class GlobalWebController {
         model.addAttribute("bookings", globalWebServices.getBookingsByUser(principal.getName()));
         return "bookings";
     }
-
+    
 }
 

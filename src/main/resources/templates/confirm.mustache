@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Confirmation</title>
+    <title>Confirm Booking}</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <header>
-    <h1>Booking Confirmation</h1>
+    <a href="/" class="logo-link">
+        <div class="logo-img">
+            <img src="/images/logo01.png" alt="AirBoss Logo">
+        </div>
+        <span class="logo-text">AirBoss</span>
+    </a>
+    <nav>
+        <a href="/dashboard" class="nav-link">Dashboard</a>
+        <a href="/perfil" class="nav-link">My Profile</a>
+        <a href="/reservas/view" class="nav-link">My Bookings</a>
+        <a href="/logout" class="nav-link">Logout</a>
+    </nav>
 </header>
 <main class="confirm-container">
     <div class="flight-details">
         <h2>Flight Details</h2>
-        <p><strong>User ID:</strong> <span id="userId"></span></p>
+        <p><strong>User ID:</strong><span id="userId"></span></p>
         <p><strong>Booking ID:</strong> <span id="bookingId"></span></p>
         <p><strong>Flight ID:</strong> <span id="flightId"></span></p>
         <p><strong>Origin:</strong> <span id="origin"></span></p>
@@ -28,20 +39,37 @@
 <script>
     document.addEventListener('DOMContentLoaded', async () => {
         const bookingId = new URLSearchParams(window.location.search).get('bookingId');
-        const response = await fetch(`/api/bookings/confirm/${bookingId}`);
-        if (response.ok) {
+        if (!bookingId) {
+            alert('⚠️ No booking ID provided.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/bookings/details/${bookingId}`);
+            if (!response.ok) {
+                throw new Error('Booking not found');
+            }
+
             const booking = await response.json();
+
             document.getElementById('bookingId').textContent = booking.bookingId;
-            document.getElementById('flightId').textContent = booking.flight.flightId;
-            document.getElementById('origin').textContent = booking.flight.origin;
-            document.getElementById('destination').textContent = booking.flight.destination;
-            document.getElementById('departureTime').textContent = booking.flight.departureTime;
-            document.getElementById('username').textContent = booking.user.username;
+            document.getElementById('userId').textContent = booking.userId;
+            document.getElementById('username').textContent = booking.username;
+            document.getElementById('flightId').textContent = booking.flightId;
+            document.getElementById('origin').textContent = booking.origin;
+            document.getElementById('destination').textContent = booking.destination;
+            document.getElementById('departureTime').textContent = booking.departureTime;
             document.getElementById('numberOfSeats').textContent = booking.numberOfSeats;
-        } else {
+
+        } catch (error) {
+            console.error('❌ Error loading booking details:', error);
             alert('Error al cargar los detalles de la reserva.');
         }
     });
 </script>
+
+<footer>
+    <p>&copy; 2025 AirBoss. All rights reserved. <a href="/terms">Terms of Service</a></p>
+</footer>
 </body>
 </html>
