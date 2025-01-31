@@ -1,10 +1,13 @@
 package io.aws.airboss.bookings;
 
-import org.springframework.http.HttpEntity;
+import io.aws.airboss.flights.Flight;
+import io.aws.airboss.users.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.channels.AcceptPendingException;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -18,25 +21,35 @@ public class BookingController {
     
     @PostMapping("/create")
     public ResponseEntity<String> createBooking(@RequestBody BookingDTO request) {
+        // Asegurarnos de que bookingDate nunca sea nulo
+        LocalDateTime bookingDate = request.getBookingDate();
+        if (bookingDate == null) {
+            bookingDate = LocalDateTime.now(); // Valor por defecto
+        }
+        
         Booking booking = bookingService.createBooking(
               request.getUserId(),
               request.getFlightId(),
-              request.getNumberOfSeats()
+              request.getNumberOfSeats(),
+              "PENDING",
+              bookingDate,
+              request.getOrigin(),
+              request.getDestination(),
+              request.getDepartureTime(),
+              request.getAirlineName(),
+              request.getAvailableSeats(),
+              request.getUsername()
         );
         
         if (booking == null) {
-            // Error al crear la reserva
             return ResponseEntity
                   .status(HttpStatus.BAD_REQUEST)
                   .body("Error processing booking.");
         }
         
-        // Devuelves SOLO la ruta a la que quieres redirigir en tu frontend
-        // sin 'redirect:' al comienzo.
         String url = "/flights/search/confirmacion?bookingId=" + booking.getBookingId();
         return ResponseEntity.ok(url);
     }
-    
     
     @GetMapping("/details/{bookingId}")
     public ResponseEntity<BookingDTO> getBookingDetails(@PathVariable Long bookingId) {
@@ -50,15 +63,19 @@ public class BookingController {
               booking.getUser().getUserId(),
               booking.getUser().getUsername(),
               booking.getFlight().getFlightId(),
-              booking.getNumberOfSeats(),
+              booking.getFlight().getAirlineName(),
+              booking.getFlight().getAvailableSeats(),
               booking.getFlight().getOrigin(),
               booking.getFlight().getDestination(),
-              booking.getStatus().toString(),
+              booking.getFlight().getDepartureTime(),
+              booking.getNumberOfSeats(),
+              booking.getStatus(),
               booking.getBookingDate()
         );
         
         return ResponseEntity.ok(bookingDTO);
     }
+    
     @GetMapping("/list")
     public ResponseEntity<Iterable<Booking>> listBookings() {
         Iterable<Booking> bookings = bookingService.getAllBookings();

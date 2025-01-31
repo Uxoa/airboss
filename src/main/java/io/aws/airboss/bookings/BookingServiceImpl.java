@@ -28,29 +28,35 @@ public class BookingServiceImpl implements IBookingService {
     private final ConcurrentHashMap<Long, LocalDateTime> seatHoldMap = new ConcurrentHashMap<>();
     
     @Override
-    public Booking createBooking(Long userId, Long flightId, int availableSeats) {
-        Flight flight = flightRepository.findById(flightId)
-              .orElseThrow(() -> new RuntimeException("Flight not found"));
+    public Booking createBooking(
+          Long userId, Long flightId, int numberOfSeats, String bookingStatus,
+          LocalDateTime bookingDate, String origin, String destination,
+          LocalDateTime departureDate, String airlineName, int availableSeats,
+          String username) {
         
-        if (flight.getAvailableSeats() < availableSeats) {
-            throw new RuntimeException("Not enough available seats");
+        User user = userRepository.findById(userId)
+              .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        
+        Flight flight = flightRepository.findById(flightId)
+              .orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+        
+        if (flight.getAvailableSeats() < numberOfSeats) {
+            throw new NoAvailableSeatsException("No hay suficientes asientos disponibles");
+        }
+        
+        synchronized (this) {
+            flight.setAvailableSeats(flight.getAvailableSeats() - numberOfSeats);
+            flightRepository.save(flight);
         }
         
         Booking booking = new Booking();
-        booking.setUser(userRepository.findById(userId)
-              .orElseThrow(() -> new RuntimeException("User not found")));
+        booking.setUser(user);
         booking.setFlight(flight);
-        booking.setNumberOfSeats(availableSeats);
-        booking.setStatus(BookingStatus.CREATED);
-        booking.setBookingDate(LocalDateTime.now());
+        booking.setNumberOfSeats(numberOfSeats);
+        booking.setStatus(BookingStatus.PENDING);
+        booking.setBookingDate(bookingDate);
         
-        Booking savedBooking = bookingRepository.save(booking);
-        System.out.println("🚀 Booking creada con ID: " + savedBooking.getBookingId());
-        
-        flight.setAvailableSeats(flight.getAvailableSeats() - availableSeats);
-        flightRepository.save(flight);
-        
-        return savedBooking;
+        return bookingRepository.save(booking);
     }
     
     @Override
@@ -86,7 +92,6 @@ public class BookingServiceImpl implements IBookingService {
               .orElseThrow(() -> new RuntimeException("Reserva no encontrada"));
         booking.setStatus(BookingStatus.CONFIRMED);
         bookingRepository.save(booking);
-        seatHoldMap.remove(booking.getFlight().getFlightId());
     }
     
     @Override
