@@ -71,7 +71,9 @@ public class WebSecurityConfig {
                           "/api/flights/search/results",
                           "/api/flights/confirm/**",
                           "/api/flights/**",
-                          "/api/aeropuertos/**"
+                          "/api/aeropuertos/**",
+                          "/api/bookings/create"
+                          
                     ).authenticated()
                     .requestMatchers("/api/auth/**").permitAll()
                     .requestMatchers("/api/users/**").hasAuthority("ROLE_ADMIN")

@@ -11,4 +11,8 @@ public interface IBookingService {
     Booking getBookingById(Long bookingId);
     
     Booking saveBooking(Booking booking);
+    
+    Booking updateBooking(Long id, Booking booking);
+    
+    void deleteBooking(Long id);
 }

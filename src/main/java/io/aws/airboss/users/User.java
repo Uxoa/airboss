@@ -1,13 +1,10 @@
 package io.aws.airboss.users;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import io.aws.airboss.profiles.ProfileRequestDTO;
-import jakarta.persistence.*;
 import io.aws.airboss.profiles.Profile;
 import io.aws.airboss.roles.Role;
+import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -40,6 +37,14 @@ public class User {
     )
     private Set<Role> roles;
     
+    
+    
+    // Constructor to accept a String argument
+    public User(String userId) {
+        this.userId = Long.parseLong(userId);
+    }
+    
+    // Constructor to accept a Long argument
     public User(Long userId, String username, String password, Profile profile, Set<Role> roles) {
         this.userId = userId;
         this.username = username;
@@ -48,13 +53,8 @@ public class User {
         this.roles = roles;
     }
     
-    
-    public User(String username, String password, Profile profile) {
-        this.username = username;
-        this.password = password;
-        this.profile = profile;
-    }
-    
+   
+    // Default constructor
     public User() {
     }
     

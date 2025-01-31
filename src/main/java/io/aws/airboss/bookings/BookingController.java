@@ -1,11 +1,7 @@
 package io.aws.airboss.bookings;
 
-import io.aws.airboss.flights.Flight;
-import io.aws.airboss.flights.IFlightService;
-import io.aws.airboss.users.User;
-import io.aws.airboss.users.UserRepository;
-import io.aws.airboss.users.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,58 +11,52 @@ import org.springframework.web.bind.annotation.*;
 public class BookingController {
     
     private final IBookingService bookingService;
-    private final IFlightService flightService;
-    private final UserService userService;
-    private final UserRepository userRepository;
     
-    @Autowired
-    public BookingController(IBookingService bookingService, IFlightService flightService, UserService userService, UserRepository userRepository) {
+    public BookingController(IBookingService bookingService) {
         this.bookingService = bookingService;
-        this.flightService = flightService;
-        this.userService = userService;
-        this.userRepository = userRepository;
     }
     
     @PostMapping("/create")
     public ResponseEntity<String> createBooking(@RequestBody BookingDTO request) {
-        User user = userRepository.findById(request.getUserId()).orElse(null);
-        Flight flight = flightService.getFlightById(request.getFlightId());
+        Booking booking = bookingService.createBooking(
+              request.getUserId(),
+              request.getFlightId(),
+              request.getNumberOfSeats()
+        );
         
-        if (user == null || flight == null) {
-            return ResponseEntity.badRequest().body("User or Flight not found.");
+        if (booking == null) {
+            // Error al crear la reserva
+            return ResponseEntity
+                  .status(HttpStatus.BAD_REQUEST)
+                  .body("Error processing booking.");
         }
         
-        Booking booking = new Booking();
-        booking.getUser().setUserId(user.getUserId());
-        booking.setFlight(flight);
-        booking.setNumberOfSeats(request.getNumberOfSeats());
-        booking.setStatus(BookingStatus.PENDING);
-        
-        booking = bookingService.saveBooking(booking);
-        return ResponseEntity.ok("/confirm?bookingId=" + booking.getBookingId());
+        // Devuelves SOLO la ruta a la que quieres redirigir en tu frontend
+        // sin 'redirect:' al comienzo.
+        String url = "/flights/search/confirmacion?bookingId=" + booking.getBookingId();
+        return ResponseEntity.ok(url);
     }
     
-    @GetMapping("/confirm")
-    public String showConfirmationPage(@RequestParam Long bookingId, Model model) {
-        model.addAttribute("bookingId", bookingId);
-        return "confirm"; // ✅ Renderiza `confirm.mustache`
-    }
     
     @GetMapping("/details/{bookingId}")
     public ResponseEntity<BookingDTO> getBookingDetails(@PathVariable Long bookingId) {
         Booking booking = bookingService.getBookingById(bookingId);
-        
         if (booking == null) {
             return ResponseEntity.notFound().build();
         }
         
         BookingDTO bookingDTO = new BookingDTO(
               booking.getBookingId(),
-              booking.getUser(),
-              booking.getFlight(),
+              booking.getUser().getUserId(),
+              booking.getFlight().getFlightId(),
               booking.getNumberOfSeats()
         );
         
-        return ResponseEntity.ok(bookingDTO); // ✅ Devuelve JSON con los detalles completos
+        return ResponseEntity.ok(bookingDTO);
+    }
+    @GetMapping("/list")
+    public ResponseEntity<Iterable<Booking>> listBookings() {
+        Iterable<Booking> bookings = bookingService.getAllBookings();
+        return ResponseEntity.ok(bookings); // ✅ Devuelve JSON con todas las reservas
     }
 }

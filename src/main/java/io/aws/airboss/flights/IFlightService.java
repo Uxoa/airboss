@@ -8,4 +8,9 @@ public interface IFlightService {
     List<String> getAvailableFlightDates();
     Flight getFlightById(Long flightId);
     
+    Flight createFlight(Flight flight);
+    
+    Flight updateFlight(Long id, Flight flight);
+    
+    void deleteFlight(Long id);
 }

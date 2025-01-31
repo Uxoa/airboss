@@ -17,7 +17,6 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
     
     @ManyToOne
     @JoinColumn(name = "flight_id", nullable = false)
@@ -61,6 +60,15 @@ public class Booking {
     public LocalDateTime getBookingDate() { return bookingDate; }
     public void setBookingDate(LocalDateTime bookingDate) { this.bookingDate = bookingDate; }
     
+    
     public BookingStatus getStatus() { return status; }
     public void setStatus(BookingStatus status) { this.status = status; }
+    
+    public Long getUserId() {
+        return user.getUserId();
+    }
+    
+    public Long getFlightId() {
+        return flight.getFlightId();
+    }
 }

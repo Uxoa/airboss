@@ -9,11 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -27,6 +23,11 @@ public class AirportController {
     @Autowired
     private AirportRepository airportRepository;
     
+    @PostMapping("/create")
+    public ResponseEntity<Airport> createAirport(@RequestBody Airport airport) {
+        return ResponseEntity.ok(airportService.createAirport(airport));
+    }
+    
     @GetMapping("/allAirports")
     public @ResponseBody List<Airport> getAllAirports() {
         return airportService.getAllAirports();
@@ -37,7 +38,16 @@ public class AirportController {
         return airportService.getAirportById(iataCode);
     }
     
-   
+    @PutMapping("/{id}")
+    public ResponseEntity<Airport> updateAirport(@PathVariable Long id, @RequestBody Airport airport) {
+        return ResponseEntity.ok(airportService.updateAirport(id, airport));
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAirport(@PathVariable Long id) {
+        airportService.deleteAirport(id);
+        return ResponseEntity.noContent().build();
+    }
 
     
    

@@ -22,6 +22,22 @@ public class FlightServiceImpl implements IFlightService {
         return flightRepository.findById(flightId)
               .orElseThrow(() -> new RuntimeException("Flight not found with ID: " + flightId));
     }
+    
+    @Override
+    public Flight createFlight(Flight flight) {
+        return null;
+    }
+    
+    @Override
+    public Flight updateFlight(Long id, Flight flight) {
+        return null;
+    }
+    
+    @Override
+    public void deleteFlight(Long id) {
+    
+    }
+    
     @Override
     public List<FlightDTO> searchFlights(String origin, String destination, LocalDate date) {
         return flightRepository.findByOriginAndDestinationAndDepartureTimeAfterAndAvailableSeatsGreaterThan(

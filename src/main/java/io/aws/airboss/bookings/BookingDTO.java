@@ -1,21 +1,16 @@
 package io.aws.airboss.bookings;
 
-import io.aws.airboss.flights.Flight;
-import io.aws.airboss.users.User;
-
 public class BookingDTO {
     private Long bookingId;
     private Long userId;
     private Long flightId;
     private int numberOfSeats;
     
-    public BookingDTO(Long bookingId, User user, Flight flight, int numberOfSeats) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null");
-        }
+    // Constructor with parameters
+    public BookingDTO(Long bookingId, Long userId, Long flightId, int numberOfSeats) {
         this.bookingId = bookingId;
-        this.userId = user.getUserId();
-        this.flightId = flight.getFlightId();
+        this.userId = userId;
+        this.flightId = flightId;
         this.numberOfSeats = numberOfSeats;
     }
     

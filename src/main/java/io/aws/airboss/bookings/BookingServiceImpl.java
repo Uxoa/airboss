@@ -59,6 +59,16 @@ public class BookingServiceImpl implements IBookingService {
     }
     
     @Override
+    public Booking updateBooking(Long id, Booking booking) {
+        return null;
+    }
+    
+    @Override
+    public void deleteBooking(Long id) {
+    
+    }
+    
+    @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
