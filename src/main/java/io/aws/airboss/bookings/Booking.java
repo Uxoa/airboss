@@ -57,8 +57,8 @@ public class Booking {
     public int getNumberOfSeats() { return numberOfSeats; }
     public void setNumberOfSeats(int availableSeats) { this.numberOfSeats = availableSeats; }
     
-    public LocalDateTime getBookingDate() { return bookingDate; }
-    public void setBookingDate(LocalDateTime bookingDate) { this.bookingDate = bookingDate; }
+    public @NotNull LocalDateTime getBookingDate() { return bookingDate; }
+    public void setBookingDate(@NotNull LocalDateTime bookingDate) { this.bookingDate = bookingDate; }
     
     
     public BookingStatus getStatus() { return status; }

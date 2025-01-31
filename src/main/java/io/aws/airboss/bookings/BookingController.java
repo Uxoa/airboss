@@ -48,8 +48,13 @@ public class BookingController {
         BookingDTO bookingDTO = new BookingDTO(
               booking.getBookingId(),
               booking.getUser().getUserId(),
+              booking.getUser().getUsername(),
               booking.getFlight().getFlightId(),
-              booking.getNumberOfSeats()
+              booking.getNumberOfSeats(),
+              booking.getFlight().getOrigin(),
+              booking.getFlight().getDestination(),
+              booking.getStatus().toString(),
+              booking.getBookingDate()
         );
         
         return ResponseEntity.ok(bookingDTO);
